@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:recomienda_flutter/screens/user_info_screen.dart';
 import 'package:recomienda_flutter/utils/authentication.dart';
 
+import '../screens/calendar.dart';
+
 class GoogleSignInButton extends StatefulWidget {
   @override
   _GoogleSignInButtonState createState() => _GoogleSignInButtonState();
@@ -42,8 +44,9 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
                 if (user != null) {
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
-                      builder: (context) => UserInfoScreen(
-                        user: user,
+                      //builder: (context) => UserInfoScreen(
+                      builder: (context) => BookingCalendarDemoApp(
+                        //user: user,
                       ),
                     ),
                   );
