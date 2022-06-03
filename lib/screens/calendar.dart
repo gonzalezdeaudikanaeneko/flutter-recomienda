@@ -79,9 +79,9 @@ class _BookingCalendarDemoAppState extends State<BookingCalendarDemoApp> {
               convertStreamResultToDateTimeRanges: convertStreamResultMock,
               getBookingStream: getBookingStreamMock,
               uploadBooking: uploadBookingMock,
-              pauseSlots: pauseSlots,
-              pauseSlotText: 'LUNCH',
-              hideBreakTime: false,
+              //pauseSlots: pauseSlots,
+              //pauseSlotText: 'LUNCH',
+              //hideBreakTime: false,
             ),
           ),
         ));
