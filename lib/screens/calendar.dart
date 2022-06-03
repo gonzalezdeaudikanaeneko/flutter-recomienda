@@ -65,13 +65,13 @@ class _BookingCalendarDemoAppState extends State<BookingCalendarDemoApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Booking Calendar Demo',
+        title: 'Calendario reservas',
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
         home: Scaffold(
           appBar: AppBar(
-            title: const Text('Booking Calendar Demo'),
+            title: const Text('Calendario reservas'),
           ),
           body: Center(
             child: BookingCalendar(
@@ -79,9 +79,9 @@ class _BookingCalendarDemoAppState extends State<BookingCalendarDemoApp> {
               convertStreamResultToDateTimeRanges: convertStreamResultMock,
               getBookingStream: getBookingStreamMock,
               uploadBooking: uploadBookingMock,
-              //pauseSlots: pauseSlots,
-              //pauseSlotText: 'LUNCH',
-              //hideBreakTime: false,
+              pauseSlots: pauseSlots,
+              pauseSlotText: 'LUNCH',
+              hideBreakTime: false,
             ),
           ),
         ));
