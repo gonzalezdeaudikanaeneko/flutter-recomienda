@@ -32,20 +32,20 @@ class _SignInScreenState extends State<SignInScreen> {
                     Flexible(
                       flex: 1,
                       child: Image.asset(
-                        'assets/firebase_logo.png',
+                        'assets/logo.png',
                         height: 160,
                       ),
                     ),
                     SizedBox(height: 20),
                     Text(
-                      'FlutterFire',
+                      'RECOMIENDA',
                       style: TextStyle(
                         color: CustomColors.firebaseYellow,
                         fontSize: 40,
                       ),
                     ),
                     Text(
-                      'Authentication',
+                      'INICIO',
                       style: TextStyle(
                         color: CustomColors.firebaseOrange,
                         fontSize: 40,
