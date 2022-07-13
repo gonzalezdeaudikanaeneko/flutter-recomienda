@@ -1,7 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:recomienda_flutter/booking.dart';
 import 'package:recomienda_flutter/google_sign_in.dart';
 import 'package:recomienda_flutter/res/custom_colors.dart';
+import 'package:recomienda_flutter/screens/calendar.dart';
 import 'package:recomienda_flutter/utils/authentication.dart';
 import 'package:recomienda_flutter/widgets/google_sign_in_button.dart';
 
@@ -14,20 +17,7 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Calendario'),
-        centerTitle: true,
-        actions: [
-          TextButton(
-              onPressed: () {
-                final provider = Provider.of<GoogleSignInProvider>(context, listen: false);
-                provider.logout();
-              },
-              child: Text('LogOut')
-          )
-        ]
-      ),
-      backgroundColor: CustomColors.firebaseNavy,
+      backgroundColor: CustomColors.firebaseGrey,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(
@@ -59,12 +49,16 @@ class _SignInScreenState extends State<SignInScreen> {
                         fontSize: 40,
                       ),
                     ),
-                    Text(
-                      'INICIO',
-                      style: TextStyle(
-                        color: CustomColors.firebaseOrange,
-                        fontSize: 40,
-                      ),
+                    CupertinoButton(
+                        child: Text('Booking'),
+                        onPressed: () => {
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              //builder: (context) => UserInfoScreen(
+                              builder: (context) => BookingCalendarDemoApp(),
+                            ),
+                          )
+                        },
                     ),
                   ],
                 ),
@@ -76,10 +70,10 @@ class _SignInScreenState extends State<SignInScreen> {
                     return Text('Error initializing Firebase');
                   } else if (snapshot.connectionState == ConnectionState.done) {
                     return GoogleSignInButton();
-                  }
+                  };
                   return CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation<Color>(
-                      CustomColors.firebaseOrange,
+                      CustomColors.firebaseNavy,
                     ),
                   );
                 },

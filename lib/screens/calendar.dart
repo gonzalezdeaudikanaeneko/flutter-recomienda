@@ -1,5 +1,9 @@
 import 'package:booking_calendar/booking_calendar.dart';
 import 'package:flutter/material.dart';
+import 'package:recomienda_flutter/main.dart';
+import 'package:recomienda_flutter/screens/sign_in_screen.dart';
+
+import '../utils/authentication.dart';
 
 class BookingCalendarDemoApp extends StatefulWidget {
   const BookingCalendarDemoApp({Key? key}) : super(key: key);
@@ -72,6 +76,28 @@ class _BookingCalendarDemoAppState extends State<BookingCalendarDemoApp> {
         home: Scaffold(
           appBar: AppBar(
             title: const Text('Calendario reservas'),
+            leading: ElevatedButton(
+              onPressed: () async {
+                await Authentication.signOut(context: context);
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    //builder: (context) => UserInfoScreen(
+                    //builder: (context) => BookingCalendarDemoApp(
+                    builder: (context) => SignInScreen(),
+                  ),
+                );
+              },
+              child: Icon(Icons.logout),
+              ),
+            /*actions: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(right: 20.0),
+                child: Icon(
+                  Icons.search,
+                  size: 26.0,
+                ),
+              ),
+            ],*/
           ),
           body: Center(
             child: BookingCalendar(

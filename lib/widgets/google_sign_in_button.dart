@@ -1,20 +1,28 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:recomienda_flutter/screens/user_info_screen.dart';
+import 'package:recomienda_flutter/booking.dart';
+import 'package:recomienda_flutter/screens/registration.dart';
 import 'package:recomienda_flutter/utils/authentication.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 import '../screens/calendar.dart';
 
 class GoogleSignInButton extends StatefulWidget {
+  const GoogleSignInButton({Key? key}) : super(key: key);
+
   @override
   _GoogleSignInButtonState createState() => _GoogleSignInButtonState();
 }
 
 class _GoogleSignInButtonState extends State<GoogleSignInButton> {
   bool _isSigningIn = false;
+  //final Stream<QuerySnapshot> usuarios = FirebaseFirestore.instance.collection('usuarios').snapshots();
 
   @override
   Widget build(BuildContext context) {
+    CollectionReference usuarios = FirebaseFirestore.instance.collection('usuarios');
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: _isSigningIn
@@ -35,13 +43,95 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
                   _isSigningIn = true;
                 });
                 User? user =
-                    await Authentication.signInWithGoogle(context: context);
+                await Authentication.signInWithGoogle(context: context);
 
                 setState(() {
                   _isSigningIn = false;
                 });
 
-                if (user != null) {
+                DocumentSnapshot snapshotUsuario = await usuarios
+                    .doc(user?.email)
+                    .get();
+
+                if(snapshotUsuario.exists){
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      //builder: (context) => UserInfoScreen(
+                      //builder: (context) => BookingCalendarDemoApp(
+                      builder: (context) => BookingScreen(
+                        //user: user,
+                      ),
+                    ),
+                  );
+                }else{
+                  /*usuarios
+                      .doc(user?.email) // <-- Document ID
+                      .set({'nombre': user?.displayName, 'email': user?.email}) // <-- Your data
+                      .then((value) => null)
+                      .catchError((error) => print('Add failed: $error'));*/
+                  var usuarioControlador = TextEditingController();
+                  var edadControlador = TextEditingController();
+                  print('aqui');
+                  Alert(
+                    context: context,
+                    title: 'Nuevo registro',
+                    content: Column(children: [
+                      TextField(decoration: InputDecoration(
+                        //icon: Icon(Icons.account_circle),
+                        labelText: 'Nick',
+                      ), controller: usuarioControlador,),
+                      TextField(decoration: InputDecoration(
+                        //icon: Icon(Icons.access_alarm_rounded),
+                        labelText: 'Name',
+                      ), controller: edadControlador,)
+                    ],),
+                    buttons: [
+                      DialogButton(
+                          child: Text('Cancelar'),
+
+                          onPressed: () => {
+                            Authentication.signOut(context: context),
+                            Navigator.pop(context)
+                          }
+                          ),
+                      DialogButton(
+                          child: Text('Aceptar'),
+                          onPressed: () {
+                            usuarios
+                                .doc(user?.email)// <-- Document ID
+                                .set({'nombre': usuarioControlador.text, 'email': user?.email, 'edad': edadControlador.text}) // <-- Your data
+                                .then((value) => null)
+                                .catchError((error) => print('Add failed: $error'));
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                //builder: (context) => UserInfoScreen(
+                                //builder: (context) => BookingCalendarDemoApp(
+                                builder: (context) => BookingScreen(),
+                              ),
+                            );
+                          }),
+                    ],
+                  ).show();
+                  /*Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      //builder: (context) => UserInfoScreen(
+                      builder: (context) => Registration(),
+                    ),
+                  );*/
+                }
+
+                /*if (user != null) {
+                  /*usuarios
+                      .add({'nombre': user.displayName, 'email': user.email})
+                      .then((value) => print('Usuario Añadido'))
+                      .catchError((error) => print('Error al guardar $error'));
+                  */
+                  usuarios
+                      .doc(user.email) // <-- Document ID
+                      .set({'nombre': user.displayName, 'email': user.email}) // <-- Your data
+                      .then((_) => print('Added'))
+                      .catchError((error) => print('Add failed: $error'));
+
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
                       //builder: (context) => UserInfoScreen(
@@ -50,7 +140,31 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
                       ),
                     ),
                   );
+                }*/
+
+                //Controllar si el usuario es nuevo o no
+                /*if(user?.metadata.lastSignInTime == user?.metadata.creationTime?.add(Duration(milliseconds: 1))) {
+                  print(
+                      'usuario nuevo+++++++++++++++++++++++++++++++++++++++++++++++++');
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => Registration(
+                        //builder: (context) => BookingCalendarDemoApp(
+                      ),
+                    ),
+                  );
                 }
+
+                else{
+                  print(
+                      'usuario registrado-----------------------------------------');
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      //builder: (context) => UserInfoScreen(
+                      builder: (context) => BookingCalendarDemoApp(),
+                    )
+                  );
+                }*/
               },
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),

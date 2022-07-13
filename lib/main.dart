@@ -1,25 +1,33 @@
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:recomienda_flutter/google_sign_in.dart';
 
 import 'screens/sign_in_screen.dart';
 
-void main() {
+Future<void> main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'FlutterFire Recomienda',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.indigo,
-        brightness: Brightness.dark,
-      ),
-      home: SignInScreen(),
-    );
-  }
+  Widget build(BuildContext context) => ChangeNotifierProvider(
+      create: (context) => GoogleSignInProvider(),
+      child: MaterialApp(
+        title: 'FlutterFire Recomienda',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.indigo,
+          brightness: Brightness.dark,
+        ),
+        home: SignInScreen(),
+      )
+  );
+
 }
 
 
