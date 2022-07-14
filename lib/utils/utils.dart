@@ -1,3 +1,5 @@
+import 'package:ntp/ntp.dart';
+
 const TIME_SLOT = {
   '10:00-10:30',
   '10:30-11:00',
@@ -14,3 +16,9 @@ const TIME_SLOT = {
   '18:30-19:00',
   '19:00-19:30',
 };
+
+Future<DateTime> syncTime() async{
+  var now = DateTime.now();
+  var offset = await NTP.getNtpOffset(localTime: now);
+  return now.add(Duration(milliseconds: offset));
+}

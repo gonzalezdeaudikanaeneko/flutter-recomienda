@@ -52,6 +52,7 @@ dependencies:
   flutter_rating_bar: 4.0.1
   intl: 0.17.0
   flutter_datetime_picker: 1.5.1
+  ntp: 2.0.0
 
 flutter_icons:
   image_path: "assets/logo.png"
@@ -91,6 +92,8 @@ flutter:
     - assets/reda.png
     - assets/pelo.png
     - assets/unas.jpg
+    - assets/fondo.jpeg
+    - assets/logo_reda.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

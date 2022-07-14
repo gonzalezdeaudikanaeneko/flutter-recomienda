@@ -12,6 +12,7 @@ import 'package:recomienda_flutter/cloud/todos_establecimientos.dart';
 import 'package:recomienda_flutter/cloud/user_ref.dart';
 import 'package:recomienda_flutter/model/booking_model.dart';
 import 'package:recomienda_flutter/model/servicios.dart';
+import 'package:recomienda_flutter/res/custom_colors.dart';
 import 'package:recomienda_flutter/screens/home_screen.dart';
 import 'package:recomienda_flutter/screens/sign_in_screen.dart';
 import 'package:recomienda_flutter/utils/authentication.dart';
@@ -51,8 +52,6 @@ class _BookingScreen extends State<BookingScreen> {
               await Authentication.signOut(context: context);
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
-                  //builder: (context) => UserInfoScreen(
-                  //builder: (context) => BookingCalendarDemoApp(
                   builder: (context) => SignInScreen(),
                 ),
               );
@@ -271,7 +270,7 @@ class _BookingScreen extends State<BookingScreen> {
                           title: Text(
                             '${servicios[index].name}',
                           ),
-                          subtitle: RatingBar.builder(
+                          /*subtitle: RatingBar.builder(
                             updateOnDrag: false,
                             itemSize: 16,
                             allowHalfRating: true,
@@ -282,7 +281,7 @@ class _BookingScreen extends State<BookingScreen> {
                             itemBuilder: (context,_) => Icon(Icons.star, color: Colors.amber,),
                             itemPadding: const EdgeInsets.all(4),
                             onRatingUpdate: (double value) {  },
-                          ),
+                          ),*/
                         ),
                       ),
                     );
@@ -448,7 +447,7 @@ class _BookingScreen extends State<BookingScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Expanded(child: Padding(padding: EdgeInsets.all(24), child: Image.asset('assets/logo.png'),)),
+        Expanded(child: Padding(padding: EdgeInsets.all(24), child: Image.asset('assets/logo_reda.png'),)),
         Expanded(child: Container(
           width: MediaQuery.of(context).size.width,
           child: Card(child: Padding(padding: EdgeInsets.all(16), child:
