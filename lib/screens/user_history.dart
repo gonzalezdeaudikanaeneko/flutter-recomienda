@@ -28,7 +28,7 @@ class UserHistory extends ConsumerWidget{
                 //await Authentication.signOut(context: context);
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
-                    builder: (context) => HomePage(),
+                    builder: (context) => HomePageWidget(),
                   ),
                 );
               },

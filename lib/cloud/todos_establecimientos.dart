@@ -45,14 +45,8 @@ Future<List<Servicios>> getServicios(Salon ser) async {
 Future<List<int>> getTimeSlotOfServicios(Servicios ser, String date) async {
   List<int> result = List<int>.empty(growable: true);
   var bookingRef = ser.reference.collection(date);
-  print('date');
-  print(date);
-  print('ser.reference');
-  print(ser.reference);
   QuerySnapshot snapshot = await bookingRef.get();
-  print('-------------------------');
   snapshot.docs.forEach((element) {
-    print('3333333333333333333333333333333333333');
     result.add(int.parse(element.id));
   });
   return result;

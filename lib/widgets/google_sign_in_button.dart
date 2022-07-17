@@ -24,7 +24,8 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
   Widget build(BuildContext context) {
     CollectionReference usuarios = FirebaseFirestore.instance.collection('usuarios');
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
+      //padding: const EdgeInsets.only(bottom: 56.0),
+      padding: const EdgeInsets.only(top: 20.0),
       child: _isSigningIn
           ? CircularProgressIndicator(
               valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
@@ -179,7 +180,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
                     Padding(
                       padding: const EdgeInsets.only(left: 10),
                       child: Text(
-                        'Sign in with Google',
+                        'Iniciar con Gmail',
                         style: TextStyle(
                           fontSize: 20,
                           color: Colors.black54,

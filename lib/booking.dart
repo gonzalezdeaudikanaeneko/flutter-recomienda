@@ -10,6 +10,8 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:recomienda_flutter/cloud/todos_establecimientos.dart';
 import 'package:recomienda_flutter/cloud/user_ref.dart';
+import 'package:recomienda_flutter/home_page_widget.dart';
+import 'package:recomienda_flutter/index.dart';
 import 'package:recomienda_flutter/model/booking_model.dart';
 import 'package:recomienda_flutter/model/servicios.dart';
 import 'package:recomienda_flutter/res/custom_colors.dart';
@@ -46,17 +48,22 @@ class _BookingScreen extends State<BookingScreen> {
       child: Scaffold(
         key: scaffoldKey,
         appBar: AppBar(
+          backgroundColor: Colors.black45,
           title: Text('Reservas'),
           leading: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                primary: Color(0xFF7CBF97),
+            ),
             onPressed: () async {
               await Authentication.signOut(context: context);
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
-                  builder: (context) => SignInScreen(),
+                  //builder: (context) => SignInScreen(),
+                  builder: (context) => HomePageWidget2(),
                 ),
               );
             },
-            child: Icon(Icons.logout),
+            child: Icon(Icons.logout, color: Colors.white),
           ),
           actions: <Widget>[
             Padding(
@@ -65,7 +72,7 @@ class _BookingScreen extends State<BookingScreen> {
                 onTap: () {
                   Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
-                        builder: (context) => HomePage(),
+                        builder: (context) => HomePageWidget(),
                       )
                   );
                 },
@@ -84,7 +91,7 @@ class _BookingScreen extends State<BookingScreen> {
               enableNextPreviousButtons: false,
               enableStepTapping: false,
               numbers: [1, 2, 3, 4, 5],
-              stepColor: Colors.black,
+              stepColor: Color(0xFF669478),
               activeStepColor: Colors.grey,
               numberStyle: TextStyle(color: Colors.white),
             ),
@@ -112,14 +119,20 @@ class _BookingScreen extends State<BookingScreen> {
                         children: [
                           Expanded(
                               child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  primary: Color(0xFF7CBF97),
+                                ),
                                 //onPressed: () {  },
                                 onPressed: currentStep == 1 ? null : () => setState(() => currentStep -= 1),
-                                child: Text('Atras'),
+                                child: Text('Atras', ),
                               )
                           ),
                           SizedBox(width: 30,),
                           Expanded(
                               child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  primary: Color(0xFF7CBF97),
+                                ),
                                 //onPressed: selectedEstablecimiento == '' || selectedSalon == ''
                                 onPressed: (currentStep == 1 &&
                                             selectedEstablecimiento.name == '') ||
@@ -168,10 +181,11 @@ class _BookingScreen extends State<BookingScreen> {
                   return GestureDetector(
                     onTap: () => setState(() => selectedEstablecimiento = establecimientos[index]),
                     child: Card(
+                      color: Color(0xFF7CBF97),
                       child: ListTile(
                         leading: Icon(
                           Icons.home_work,
-                          color: Colors.black,
+                          color: Color(0xFF111111),
                         ),
                         trailing: selectedEstablecimiento.name ==
                             establecimientos[index].name
@@ -210,6 +224,7 @@ class _BookingScreen extends State<BookingScreen> {
                     return GestureDetector(
                       onTap: () =>  setState(() => selectedSalon = salones[index]),
                       child: Card(
+                        color: Color(0xFF7CBF97),
                         child: ListTile(
                           leading: Icon(
                             Icons.home_outlined,
@@ -258,6 +273,7 @@ class _BookingScreen extends State<BookingScreen> {
                         print(selectedServicio),
                       },
                       child: Card(
+                        color: Color(0xFF7CBF97),
                         child: ListTile(
                           leading: Icon(
                             Icons.person,
@@ -297,7 +313,7 @@ class _BookingScreen extends State<BookingScreen> {
     return Column(
       children: [
         Container(
-          color: Colors.greenAccent,
+          color: Color(0xFF7CBF97),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -307,9 +323,9 @@ class _BookingScreen extends State<BookingScreen> {
                       padding: const EdgeInsets.all(12),
                       child: Column(
                         children: [
-                          Text('${DateFormat.EEEE().format(now)}',),
-                          Text('${now.day}',),
-                          Text('${DateFormat.MMMM().format(now)}',),
+                          Text('${DateFormat.EEEE().format(now)}', style: TextStyle(color: Colors.white)),
+                          Text('${now.day}', style: TextStyle(color: Colors.white)),
+                          Text('${DateFormat.MMMM().format(now)}', style: TextStyle(color: Colors.white)),
                         ],
                       ),
                     ),
@@ -356,15 +372,15 @@ class _BookingScreen extends State<BookingScreen> {
                         setState(() => selectedTimeSlot = index);
                       },
                       child: Card(
-                        color: listTimeSlot.contains(index) ? Colors.grey : selectedTime == TIME_SLOT.elementAt(index) ? Colors.white54 : Colors.black,
+                        color: listTimeSlot.contains(index) ? Color(0xFFBE4A4A) : selectedTime == TIME_SLOT.elementAt(index) ? Colors.white12 : Color(0xFF555555),
                         child: GridTile(
                           child: Center(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text('${TIME_SLOT.elementAt(index)}'),
-                                Text(listTimeSlot.contains(index) ? 'Lleno' : 'Disponible')
+                                Text('${TIME_SLOT.elementAt(index)}', style: TextStyle(color: Colors.white)),
+                                Text(listTimeSlot.contains(index) ? 'Lleno' : 'Disponible', style: TextStyle(color: Colors.white))
                               ],
                             ),
                           ),
@@ -453,8 +469,9 @@ class _BookingScreen extends State<BookingScreen> {
           child: Card(child: Padding(padding: EdgeInsets.all(16), child:
             Column(
               children: [
-                Text('Gracias por reservar nuestros servicios !!!'.toUpperCase()),
+                Text('Gracias por confiar en nuestros servicios'.toUpperCase()),
                 Text('Informacion de la reserva'.toUpperCase()),
+                SizedBox(height: 12,),
                 Row(children: [
                   Icon(Icons.calendar_today),
                   SizedBox(width: 20,),
