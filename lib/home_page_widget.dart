@@ -1,4 +1,5 @@
 import 'package:recomienda_flutter/res/custom_colors.dart';
+import 'package:recomienda_flutter/screens/registro.dart';
 import 'package:recomienda_flutter/utils/authentication.dart';
 import 'package:recomienda_flutter/widgets/google_sign_in_button.dart';
 
@@ -37,16 +38,6 @@ class _HomePageWidgetState extends State<HomePageWidget2> {
                   fit: BoxFit.cover,
                 ),
               ),
-              /*SizedBox(
-                height: 10,
-              ),
-              Text(
-                'RECOMIENDA',
-                style: FlutterFlowTheme.of(context).title1.override(
-                  fontFamily: 'Poppins',
-                  fontWeight: FontWeight.w300,
-                ),
-              ),*/
               SizedBox(
                 height: 10,
               ),
@@ -76,7 +67,7 @@ class _HomePageWidgetState extends State<HomePageWidget2> {
                       onPressed: () {
                         print('Button pressed ...');
                       },
-                      text: 'U s e r  n a m e ',
+                      text: 'Usuario ',
                       options: FFButtonOptions(
                         width: 200,
                         height: 40,
@@ -101,7 +92,7 @@ class _HomePageWidgetState extends State<HomePageWidget2> {
                       onPressed: () {
                         print('Button pressed ...');
                       },
-                      text: 'P a s s w o r d',
+                      text: 'Contraseña',
                       options: FFButtonOptions(
                         width: 200,
                         height: 40,
@@ -126,7 +117,7 @@ class _HomePageWidgetState extends State<HomePageWidget2> {
                       onPressed: () {
                         print('Button pressed ...');
                       },
-                      text: 'L o g i n',
+                      text: 'Iniciar Sesion',
                       options: FFButtonOptions(
                         width: 170,
                         height: 40,
@@ -145,11 +136,17 @@ class _HomePageWidgetState extends State<HomePageWidget2> {
                       ),
                     ),
                     SizedBox(
-                      height: 10,
+                      height: 5,
                     ),
                     FFButtonWidget(
                       onPressed: () {
-                        print('Button pressed ...');
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            //builder: (context) => UserInfoScreen(
+                            //builder: (context) => BookingCalendarDemoApp(
+                            builder: (context) => Registro(),
+                          ),
+                        );
                       },
                       text: 'Registrate',
                       options: FFButtonOptions(
@@ -165,7 +162,7 @@ class _HomePageWidgetState extends State<HomePageWidget2> {
                           color: Colors.transparent,
                           width: 1,
                         ),
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(15),
                       ),
                     ),
 
@@ -188,7 +185,7 @@ class _HomePageWidgetState extends State<HomePageWidget2> {
                 },
               ),
               SizedBox(
-                height: 20,
+                height: 5,
               ),
               Row(
                 mainAxisSize: MainAxisSize.max,

@@ -3,11 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:recomienda_flutter/booking.dart';
-import 'package:recomienda_flutter/screens/registration.dart';
+import 'package:recomienda_flutter/screens/registro.dart';
 import 'package:recomienda_flutter/utils/authentication.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-
-import '../screens/calendar.dart';
 
 class GoogleSignInButton extends StatefulWidget {
   const GoogleSignInButton({Key? key}) : super(key: key);
@@ -70,10 +68,11 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
                       .set({'nombre': user?.displayName, 'email': user?.email}) // <-- Your data
                       .then((value) => null)
                       .catchError((error) => print('Add failed: $error'));*/
-                  var usuarioControlador = TextEditingController();
+                  /*var usuarioControlador = TextEditingController();
                   var edadControlador = TextEditingController();
                   print('aqui');
                   Alert(
+                    padding: EdgeInsets.zero,
                     context: context,
                     title: 'Nuevo registro',
                     content: Column(children: [
@@ -112,13 +111,13 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
                             );
                           }),
                     ],
-                  ).show();
-                  /*Navigator.of(context).pushReplacement(
+                  ).show();*/
+                  Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
                       //builder: (context) => UserInfoScreen(
-                      builder: (context) => Registration(),
+                      builder: (context) => Registro(),
                     ),
-                  );*/
+                  );
                 }
 
                 /*if (user != null) {

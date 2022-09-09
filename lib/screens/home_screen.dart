@@ -18,7 +18,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   String emailUser = FirebaseAuth.instance.currentUser?.email as String;
   String nameUser = FirebaseAuth.instance.currentUser?.displayName as String;
-  String numberUser = FirebaseAuth.instance.currentUser?.phoneNumber as String;
+  //String numberUser = FirebaseAuth.instance.currentUser?.phoneNumber as String;
 
   @override
   Widget build(BuildContext context) {

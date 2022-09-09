@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:recomienda_flutter/booking.dart';
 import 'package:recomienda_flutter/screens/user_info_screen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -24,11 +25,16 @@ class Authentication {
     User? user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
-      Navigator.of(context).pushReplacement(
+      /*Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (context) => UserInfoScreen(
             user: user,
           ),
+        ),
+      );*/
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => BookingScreen(),
         ),
       );
     }

@@ -64,8 +64,8 @@ dependencies:
   url_launcher: 6.0.15
 
 flutter_icons:
-  image_path: "assets/logo.png"
-  android: true
+  image_path: "assets/icons/ic_launcher_recomienda.png"
+  android: 'launcher_icon'
   ios: true
 
 dev_dependencies:
