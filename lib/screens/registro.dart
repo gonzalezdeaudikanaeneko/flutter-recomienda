@@ -14,13 +14,6 @@ class Registro extends StatefulWidget {
   _HomePageWidgetState createState() => _HomePageWidgetState();
 }
 
-
-/*
-TextField(decoration: InputDecoration(
-                        //icon: Icon(Icons.account_circle),
-                        labelText: 'Nick',
-                      ), controller: usuarioControlador,)*/
-
 class _HomePageWidgetState extends State<Registro> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   var nombreControlador = TextEditingController();

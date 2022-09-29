@@ -2,21 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:im_stepper/stepper.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:recomienda_flutter/cloud/todos_establecimientos.dart';
-import 'package:recomienda_flutter/cloud/user_ref.dart';
 import 'package:recomienda_flutter/home_page_widget.dart';
-import 'package:recomienda_flutter/index.dart';
 import 'package:recomienda_flutter/model/booking_model.dart';
 import 'package:recomienda_flutter/model/servicios.dart';
-import 'package:recomienda_flutter/res/custom_colors.dart';
 import 'package:recomienda_flutter/screens/home_screen.dart';
-import 'package:recomienda_flutter/screens/sign_in_screen.dart';
 import 'package:recomienda_flutter/utils/authentication.dart';
 import 'package:recomienda_flutter/utils/utils.dart';
 import '../model/establecimientos.dart';
@@ -335,8 +330,8 @@ class _BookingScreen extends State<BookingScreen> {
                 onTap: () {
                   DatePicker.showDatePicker(context,
                     showTitleActions: true,
-                    minTime: DateTime.now(),
-                    maxTime: now.add(Duration(days: 31)) ,
+                    minTime: DateTime.now(), //Tiempo desde que puedo coger cita
+                    maxTime: DateTime.now().add(Duration(days: 31)) , //Tiempo hasta qu puedo coger cita
                     onConfirm: (date) => setState(() => selectedDate = date)// next time 31 days ago
                   );
                 },
@@ -353,44 +348,63 @@ class _BookingScreen extends State<BookingScreen> {
         ),
         Expanded(
           child: FutureBuilder(
-            future: getTimeSlotOfServicios(ser, DateFormat('dd_MM_yy').format(selectedDate)),
+            future: getMaxAvailableTimeSlot(selectedDate),
             builder: (context, snapshot) {
               if(snapshot.connectionState == ConnectionState.waiting)
                 return Center(child: CircularProgressIndicator(),);
-              else{
-                var listTimeSlot = snapshot.data as List<int>;
-                print('snapshot');
-                print(listTimeSlot.length);
-                return GridView.builder(
-                    itemCount: TIME_SLOT.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                    ),
-                    itemBuilder: (context,index) => GestureDetector(
-                      onTap: listTimeSlot.contains(index) ? null : () {
-                        setState(() => selectedTime = TIME_SLOT.elementAt(index));
-                        setState(() => selectedTimeSlot = index);
-                      },
-                      child: Card(
-                        color: listTimeSlot.contains(index) ? Color(0xFFBE4A4A) : selectedTime == TIME_SLOT.elementAt(index) ? Colors.white12 : Color(0xFF555555),
-                        child: GridTile(
-                          child: Center(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text('${TIME_SLOT.elementAt(index)}', style: TextStyle(color: Colors.white)),
-                                Text(listTimeSlot.contains(index) ? 'Lleno' : 'Disponible', style: TextStyle(color: Colors.white))
-                              ],
+              else
+                {
+                  var maxTimeSlot = snapshot.data as int;
+                  return FutureBuilder(
+                    future: getTimeSlotOfServicios(ser, DateFormat('dd_MM_yy').format(selectedDate)),
+                    builder: (context, snapshot) {
+                      if(snapshot.connectionState == ConnectionState.waiting)
+                        return Center(child: CircularProgressIndicator(),);
+                      else{
+                        var listTimeSlot = snapshot.data as List<int>;
+                        print('snapshot');
+                        print(listTimeSlot.length);
+                        return GridView.builder(
+                            itemCount: TIME_SLOT.length,
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
                             ),
-                          ),
-                          header: selectedTime == TIME_SLOT.elementAt(index) ? Icon(Icons.check) : null,
-                        ),
-                      ),
-                    ));
-              }
-            },
+                            itemBuilder: (context,index) => GestureDetector(
+                              onTap: maxTimeSlot > index || listTimeSlot.contains(index) ? null : () {
+                                setState(() => selectedTime = TIME_SLOT.elementAt(index));
+                                setState(() => selectedTimeSlot = index);
+                              },
+                              child: Card(
+                                color: listTimeSlot.contains(index)
+                                    ? Color(0xFFBE4A4A) :
+                                    maxTimeSlot > index ? Color(0xFFEE5E5E)
+                                  : selectedTime == TIME_SLOT.elementAt(index)
+                                      ? Colors.white12
+                                      : Color(0xFF555555),
+                                child: GridTile(
+                                  child: Center(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text('${TIME_SLOT.elementAt(index)}', style: TextStyle(color: Colors.white)),
+                                        Text(listTimeSlot.contains(index)
+                                            ? 'Lleno' :
+                                        maxTimeSlot > index ? 'No Disponible'
+                                              : 'Disponible', style: TextStyle(color: Colors.white))
+                                      ],
+                                    ),
+                                  ),
+                                  header: selectedTime == TIME_SLOT.elementAt(index) ? Icon(Icons.check) : null,
+                                ),
+                              ),
+                            ));
+                      }
+                    },
 
+                  );
+                }
+            }
           ),
         )
       ],
@@ -442,7 +456,11 @@ class _BookingScreen extends State<BookingScreen> {
     batch.set(servicioBooking, bookingModel.toJson());
     batch.set(userBooking, bookingModel.toJson());
     batch.commit().then((value) {
-      print('Booking OKEY');
+
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Booking Correcto !!!'), behavior: SnackBarBehavior.floating, duration: Duration(seconds: 5),)
+      );
+
       setState(() => selectedDate = DateTime.now());
       setState(() => selectedServicio = Servicios(userName: '', name: '', docId: ''));
       setState(() => selectedEstablecimiento = Establecimientos(name: '', address: ''));
@@ -451,10 +469,37 @@ class _BookingScreen extends State<BookingScreen> {
       setState(() => selectedTime = '');
       setState(() => selectedTimeSlot = -1);
       Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-      builder: (context) => BookingScreen(),
-      )
+        MaterialPageRoute(
+          builder: (context) => BookingScreen(),
+        )
       );
+    });
+
+    //Create event
+    final event = Event(
+        title: 'Reserva Peluqueria',
+        description: 'Reserva peluqueria ${selectedTime} - '
+            '${DateFormat('dd/MM/yyyy').format(selectedDate)}',
+        location: '${selectedSalon.address}',
+        startDate: DateTime(
+            selectedDate.year,
+            selectedDate.month,
+            selectedDate.day,
+            hour,
+            minutes
+        ),
+        endDate: DateTime(
+            selectedDate.year,
+            selectedDate.month,
+            selectedDate.day,
+            hour,
+            minutes + 30
+        ),
+        iosParams: IOSParams(reminder: Duration(minutes: 30)),
+        androidParams: AndroidParams(emailInvites: [], )
+    );
+    Add2Calendar.addEvent2Cal(event).then((value) {
+      print('object');
     });
   }
 
