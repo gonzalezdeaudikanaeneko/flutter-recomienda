@@ -3,9 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:recomienda_flutter/booking.dart';
+import 'package:recomienda_flutter/cloud/user_ref.dart';
+import 'package:recomienda_flutter/model/usuarios.dart';
 import 'package:recomienda_flutter/screens/registro.dart';
 import 'package:recomienda_flutter/utils/authentication.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 
 class GoogleSignInButton extends StatefulWidget {
   const GoogleSignInButton({Key? key}) : super(key: key);
@@ -55,14 +56,15 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
                 if(snapshotUsuario.exists){
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
-                      //builder: (context) => UserInfoScreen(
-                      //builder: (context) => BookingCalendarDemoApp(
                       builder: (context) => BookingScreen(
                         //user: user,
                       ),
                     ),
                   );
-                }else{
+                }
+                /*if(snapshotUsuario.exists){
+                  displayHome();
+                }*/else{
                   /*usuarios
                       .doc(user?.email) // <-- Document ID
                       .set({'nombre': user?.displayName, 'email': user?.email}) // <-- Your data
@@ -193,4 +195,16 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
             ),
     );
   }
+}
+
+displayHome() async {
+  String email = FirebaseAuth.instance.currentUser?.email as String;
+  var document = await FirebaseFirestore.instance.collection('usuarios').doc(email);
+  var snapshot = await document.get();
+  print('snapshot');
+  if(snapshot['isStaff'] != null)
+    print(snapshot['isStaff']);
+  else
+    print('No existe');
+
 }

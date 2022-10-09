@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:recomienda_flutter/booking.dart';
-import 'package:recomienda_flutter/screens/calendar.dart';
 import 'package:recomienda_flutter/screens/user_history.dart';
 
 import '../flutter_flow/flutter_flow_theme.dart';
@@ -18,6 +17,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   String emailUser = FirebaseAuth.instance.currentUser?.email as String;
   String nameUser = FirebaseAuth.instance.currentUser?.displayName as String;
+  //String PhoneUser = FirebaseAuth.instance.currentUser?.phoneNumber as String;
   //String numberUser = FirebaseAuth.instance.currentUser?.phoneNumber as String;
 
   @override
@@ -83,7 +83,8 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                           onPressed: () {
                             print('Button pressed ...');
                           },
-                          text: 'nko_glez',
+                          //text: 'nko_glez',
+                          text: nameUser,
                           options: FFButtonOptions(
                             width: 200,
                             height: 40,
@@ -279,9 +280,8 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                 ),
                 //Divider(),
                 Text(
-                  //'XXXXXXX',
-                  '664043001',
-                  style: FlutterFlowTheme.of(context).bodyText1.override(
+                  'XXXXXXX',
+                    style: FlutterFlowTheme.of(context).bodyText1.override(
                     fontFamily: 'Poppins',
                     color: Color(0xFF9E9E9E),
                     fontWeight: FontWeight.w300,

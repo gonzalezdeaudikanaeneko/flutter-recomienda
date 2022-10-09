@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:recomienda_flutter/model/servicios.dart';
 
 import '../model/establecimientos.dart';
+import '../model/funcion.dart';
 import '../model/salones.dart';
 
 Future<List<Establecimientos>> getEstablecimientos() async {
@@ -37,12 +38,34 @@ Future<List<Servicios>> getServicios(Salon ser) async {
     servicio.docId = element.id;
     servicio.reference = element.reference;
     servicios.add(servicio);
-    //salones.add(Salon.fromJson(element.data()));
   });
   return servicios;
 }
 
-Future<List<int>> getTimeSlotOfServicios(Servicios ser, String date) async {
+Future<List<Funcion>> getFunciones(Salon ser) async {
+  var funciones = new List<Funcion>.empty(growable: true);
+  var funcionRef = ser.reference.collection('servicios');
+  var snapshot = await funcionRef.get();
+  snapshot.docs.forEach((element){
+    var funcion = Funcion.fromJson(element.data());
+    funcion.docId = element.id;
+    funcion.reference = element.reference;
+    funciones.add(funcion);
+  });
+  return funciones;
+}
+
+/*Future<List<int>> getTimeSlotOfServicios(Servicios ser, String date) async {
+  List<int> result = List<int>.empty(growable: true);
+  var bookingRef = ser.reference.collection(date);
+  QuerySnapshot snapshot = await bookingRef.get();
+  snapshot.docs.forEach((element) {
+    result.add(int.parse(element.id));
+  });
+  return result;
+}*/
+
+Future<List<int>> getTimeSlotOfServicios(Servicios ser, String date, Funcion fun) async {
   List<int> result = List<int>.empty(growable: true);
   var bookingRef = ser.reference.collection(date);
   QuerySnapshot snapshot = await bookingRef.get();

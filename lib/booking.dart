@@ -5,12 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:im_stepper/stepper.dart';
+import 'package:intl/date_symbol_data_file.dart';
 import 'package:intl/intl.dart';
 import 'package:recomienda_flutter/cloud/todos_establecimientos.dart';
 import 'package:recomienda_flutter/home_page_widget.dart';
 import 'package:recomienda_flutter/model/booking_model.dart';
+import 'package:recomienda_flutter/model/funcion.dart';
 import 'package:recomienda_flutter/model/servicios.dart';
+import 'package:recomienda_flutter/model/usuarios.dart';
 import 'package:recomienda_flutter/screens/home_screen.dart';
 import 'package:recomienda_flutter/utils/authentication.dart';
 import 'package:recomienda_flutter/utils/utils.dart';
@@ -31,11 +35,13 @@ class _BookingScreen extends State<BookingScreen> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   int currentStep = 1;
   Establecimientos selectedEstablecimiento = Establecimientos(name: '', address: '');
-  Salon selectedSalon = Salon(name: '', address: '', docId: '');
+  Salon selectedSalon = Salon(name: '', address: '', horario: '', docId: '');
   Servicios selectedServicio = Servicios(name: '', userName: '', docId: '');
+  Funcion selectedFuncion = Funcion(name: '', slot: 0, docId: '');
   DateTime selectedDate = DateTime.now();
   String selectedTime = '';
   int selectedTimeSlot = -1;
+  Usuarios usuario = Usuarios(nombre: '', email: '');
 
   @override
   Widget build(BuildContext context) {
@@ -43,11 +49,13 @@ class _BookingScreen extends State<BookingScreen> {
       child: Scaffold(
         key: scaffoldKey,
         appBar: AppBar(
+          //toolbarHeight: 50,
+          toolbarHeight: (MediaQuery.of(context).size.height)/15,
           backgroundColor: Colors.black45,
           title: Text('Reservas'),
           leading: ElevatedButton(
             style: ElevatedButton.styleFrom(
-                primary: Color(0xFF7CBF97),
+              primary: Color(0xFF7CBF97),
             ),
             onPressed: () async {
               await Authentication.signOut(context: context);
@@ -81,11 +89,14 @@ class _BookingScreen extends State<BookingScreen> {
         body: Column(
           children: [
             NumberStepper(
+              stepRadius: 14,
               activeStep: currentStep - 1,
               direction: Axis.horizontal,
+              lineLength: (MediaQuery.of(context).size.width)/15,
+              scrollingDisabled: true,
               enableNextPreviousButtons: false,
               enableStepTapping: false,
-              numbers: [1, 2, 3, 4, 5],
+              numbers: [1, 2, 3, 4, 5, 6],
               stepColor: Color(0xFF669478),
               activeStepColor: Colors.grey,
               numberStyle: TextStyle(color: Colors.white),
@@ -95,61 +106,62 @@ class _BookingScreen extends State<BookingScreen> {
               child: currentStep == 1
                   ? displayEstablecimientos()
                   : currentStep == 2
-                    ? displaySalon(selectedEstablecimiento.name)
-                    : currentStep == 3
-                      ? displayServicios(selectedSalon)
-                      : currentStep == 4
-                        ? displayTimeSlot(context, selectedServicio)
-                        : currentStep == 5
-                          ? displayConfirm(context)
-                          : Container(),
+                  ? displaySalon(selectedEstablecimiento.name)
+                  : currentStep == 3
+                  ? displayServicios(selectedSalon)
+                  : currentStep == 4
+                  ? displayFunciones(selectedSalon)
+                  : currentStep == 5
+                  //? displayTimeSlot(context, selectedServicio)
+                  ? displayTimeSlot(context, selectedServicio, selectedFuncion)
+                  : currentStep == 6
+                  ? displayConfirm(context)
+                  : Container(),
             ),
             Expanded(
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                      padding: EdgeInsets.all(8),
-                      child:Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  primary: Color(0xFF7CBF97),
-                                ),
-                                //onPressed: () {  },
-                                onPressed: currentStep == 1 ? null : () => setState(() => currentStep -= 1),
-                                child: Text('Atras', ),
-                              )
-                          ),
-                          SizedBox(width: 30,),
-                          Expanded(
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  primary: Color(0xFF7CBF97),
-                                ),
-                                //onPressed: selectedEstablecimiento == '' || selectedSalon == ''
-                                onPressed: (currentStep == 1 &&
-                                            selectedEstablecimiento.name == '') ||
-                                    (currentStep == 2 &&
-                                        selectedSalon.docId == '') ||
-                                    (currentStep == 3 &&
-                                        selectedServicio.docId == '') ||
-                                    (currentStep == 3 &&
-                                        selectedServicio.docId == '') ||
-                                    (currentStep == 4 &&
-                                        selectedTimeSlot == -1)
-                                    ? null
-                                    : currentStep == 5
-                                      ? null
-                                      : () => setState(() => currentStep += 1),
-                                child: Text('Siguiente'),
-                              )
-                          ),
-                        ],
-                      )),
-                ),
-                )
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                    padding: EdgeInsets.all(8),
+                    child:Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Color(0xFF7CBF97),
+                              ),
+                              onPressed: currentStep == 1 ? null : () => setState(() => currentStep -= 1),
+                              child: Text('Atras',),
+                            )
+                        ),
+                        SizedBox(width: 30,),
+                        Expanded(
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Color(0xFF7CBF97),
+                              ),
+                              onPressed: (currentStep == 1 &&
+                                  selectedEstablecimiento.name == '') ||
+                                  (currentStep == 2 &&
+                                      selectedSalon.docId == '') ||
+                                  (currentStep == 3 &&
+                                      selectedServicio.docId == '') ||
+                                  (currentStep == 4 &&
+                                      selectedFuncion.docId == '') ||
+                                  (currentStep == 5 &&
+                                      selectedTimeSlot == -1)
+                                  ? null
+                                  : currentStep == 6
+                                  ? null
+                                  : () => setState(() => currentStep += 1),
+                              child: Text('Siguiente'),
+                            )
+                        ),
+                      ],
+                    )),
+              ),
+            )
           ],
         ),
       ),
@@ -159,44 +171,42 @@ class _BookingScreen extends State<BookingScreen> {
   displayEstablecimientos() {
     String email = FirebaseAuth.instance.currentUser?.email as String;
     return FutureBuilder(
-      future: getEstablecimientos(),
-      //future: getUserProfiles(email),
-      //builder: (BuildContext context, AsyncSnapshot<List<Establecimientos>> snapshot) {  },
-      builder: (context, AsyncSnapshot<List<Establecimientos>> snapshot){
-        if(snapshot.connectionState == ConnectionState.waiting)
-          return Center(child: CircularProgressIndicator(),);
-        else{
-          var establecimientos = snapshot.data as List<Establecimientos>;
-          if(snapshot.data == null || snapshot.data?.length == 0)
-            return Center(child: Text('No se cargan los establecimientos'),);
-          else
-            return ListView.builder(
-                itemCount: establecimientos.length,
-                itemBuilder: (context, index){
-                  return GestureDetector(
-                    onTap: () => setState(() => selectedEstablecimiento = establecimientos[index]),
-                    child: Card(
-                      color: Color(0xFF7CBF97),
-                      child: ListTile(
-                        leading: Icon(
-                          Icons.home_work,
-                          color: Color(0xFF111111),
-                        ),
-                        trailing: selectedEstablecimiento.name ==
-                            establecimientos[index].name
-                            ? Icon(Icons.check)
-                            : null,
-                        title: Text(
-                          '${establecimientos[index].address}',
-                          //style: GoogleFonts.robotoMono(),
+        future: getEstablecimientos(),
+        builder: (context, AsyncSnapshot<List<Establecimientos>> snapshot){
+          if(snapshot.connectionState == ConnectionState.waiting)
+            return Center(child: CircularProgressIndicator(),);
+          else{
+            var establecimientos = snapshot.data as List<Establecimientos>;
+            if(snapshot.data == null || snapshot.data?.length == 0)
+              return Center(child: Text('No se cargan los establecimientos'),);
+            else
+              return ListView.builder(
+                  itemCount: establecimientos.length,
+                  itemBuilder: (context, index){
+                    return GestureDetector(
+                      onTap: () => setState(() => selectedEstablecimiento = establecimientos[index]),
+                      child: Card(
+                        color: Color(0xFF7CBF97),
+                        child: ListTile(
+                          leading: Icon(
+                            Icons.home_work,
+                            color: Color(0xFF111111),
+                          ),
+                          trailing: selectedEstablecimiento.name ==
+                              establecimientos[index].name
+                              ? Icon(Icons.check)
+                              : null,
+                          title: Text(
+                            '${establecimientos[index].address}',
+                            //style: GoogleFonts.robotoMono(),
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                }
-            );
+                    );
+                  }
+              );
+          }
         }
-      }
     );
   }
 
@@ -247,7 +257,7 @@ class _BookingScreen extends State<BookingScreen> {
 
   displayServicios(Salon ser) {
     return FutureBuilder(
-      future: getServicios(ser),
+        future: getServicios(ser),
         builder: (context, AsyncSnapshot<List<Servicios>> snapshot){
           if(snapshot.connectionState == ConnectionState.waiting)
             return Center(child: CircularProgressIndicator(),);
@@ -261,11 +271,7 @@ class _BookingScreen extends State<BookingScreen> {
                   itemBuilder: (context, index){
                     return GestureDetector(
                       onTap: () =>  {
-                        print('1- selectedServicio'),
-                        print(selectedServicio),
                         setState(() => selectedServicio = servicios[index]),
-                        print('2- selectedServicio'),
-                        print(selectedServicio),
                       },
                       child: Card(
                         color: Color(0xFF7CBF97),
@@ -303,8 +309,56 @@ class _BookingScreen extends State<BookingScreen> {
     );
   }
 
-  displayTimeSlot(BuildContext context, Servicios ser) {
+  displayFunciones(Salon ser) {
+    return FutureBuilder(
+        future: getFunciones(ser),
+        builder: (context, AsyncSnapshot<List<Funcion>> snapshot){
+          if(snapshot.connectionState == ConnectionState.waiting)
+            return Center(child: CircularProgressIndicator(),);
+          else{
+            var funciones = snapshot.data as List<Funcion>;
+            if(funciones == null || funciones.length == 0) {
+              return Center(child: CircularProgressIndicator(),);
+            } else
+              return ListView.builder(
+                  itemCount: funciones.length,
+                  itemBuilder: (context, index){
+                    return GestureDetector(
+                      onTap: () =>  {
+                        setState(() => selectedFuncion = funciones[index]),
+                      },
+                      child: Card(
+                        color: Color(0xFF7CBF97),
+                        child: ListTile(
+                          leading: Icon(
+                            Icons.cut,
+                            color: Colors.black,
+                          ),
+                          trailing: selectedFuncion.docId ==
+                              funciones[index].docId
+                              ? Icon(Icons.check)
+                              : null,
+                          title: Text(
+                            '${funciones[index].name} (${funciones[index].slot})',
+                          )
+                        ),
+                      ),
+                    );
+                  }
+              );
+          }
+        }
+    );
+  }
+
+  /*displayTimeSlot(BuildContext context, Servicios ser) {
     var now = selectedDate;
+    var hora = selectedSalon.horario.split(',');
+    print('DateTime.now()');
+    print(DateTime.now());
+    print(selectedTime);
+    print(selectedTimeSlot);
+    //initializeDateFormatting('Es_es', 'es');
     return Column(
       children: [
         Container(
@@ -329,10 +383,10 @@ class _BookingScreen extends State<BookingScreen> {
               GestureDetector(
                 onTap: () {
                   DatePicker.showDatePicker(context,
-                    showTitleActions: true,
-                    minTime: DateTime.now(), //Tiempo desde que puedo coger cita
-                    maxTime: DateTime.now().add(Duration(days: 31)) , //Tiempo hasta qu puedo coger cita
-                    onConfirm: (date) => setState(() => selectedDate = date)// next time 31 days ago
+                      showTitleActions: true,
+                      minTime: DateTime.now(), //Tiempo desde que puedo coger cita
+                      maxTime: DateTime.now().add(Duration(days: 31)) , //Tiempo hasta qu puedo coger cita
+                      onConfirm: (date) => setState(() => selectedDate = date)// next time 31 days ago
                   );
                 },
                 child: Padding(
@@ -348,11 +402,11 @@ class _BookingScreen extends State<BookingScreen> {
         ),
         Expanded(
           child: FutureBuilder(
-            future: getMaxAvailableTimeSlot(selectedDate),
-            builder: (context, snapshot) {
-              if(snapshot.connectionState == ConnectionState.waiting)
-                return Center(child: CircularProgressIndicator(),);
-              else
+              future: getMaxAvailableTimeSlot(selectedDate),
+              builder: (context, snapshot) {
+                if(snapshot.connectionState == ConnectionState.waiting)
+                  return Center(child: CircularProgressIndicator(),);
+                else
                 {
                   var maxTimeSlot = snapshot.data as int;
                   return FutureBuilder(
@@ -362,40 +416,46 @@ class _BookingScreen extends State<BookingScreen> {
                         return Center(child: CircularProgressIndicator(),);
                       else{
                         var listTimeSlot = snapshot.data as List<int>;
-                        print('snapshot');
-                        print(listTimeSlot.length);
                         return GridView.builder(
-                            itemCount: TIME_SLOT.length,
+                            //itemCount: TIME_SLOT.length,
+                            itemCount: hora.length,
                             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 3,
+                              childAspectRatio: 1.5,
+                              mainAxisSpacing: 1,
+                              crossAxisSpacing: 2
                             ),
                             itemBuilder: (context,index) => GestureDetector(
                               onTap: maxTimeSlot > index || listTimeSlot.contains(index) ? null : () {
-                                setState(() => selectedTime = TIME_SLOT.elementAt(index));
+                                //setState(() => selectedTime = TIME_SLOT.elementAt(index));
+                                setState(() => selectedTime = hora.elementAt(index));
                                 setState(() => selectedTimeSlot = index);
                               },
                               child: Card(
                                 color: listTimeSlot.contains(index)
                                     ? Color(0xFFBE4A4A) :
-                                    maxTimeSlot > index ? Color(0xFFEE5E5E)
-                                  : selectedTime == TIME_SLOT.elementAt(index)
-                                      ? Colors.white12
-                                      : Color(0xFF555555),
+                                maxTimeSlot > index ? Color(0xFFEE5E5E)
+                                    //: selectedTime == TIME_SLOT.elementAt(index)
+                                    : selectedTime == hora.elementAt(index)
+                                    ? Colors.white12
+                                    : Color(0xFF555555),
                                 child: GridTile(
                                   child: Center(
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
-                                        Text('${TIME_SLOT.elementAt(index)}', style: TextStyle(color: Colors.white)),
+                                        //Text('${TIME_SLOT.elementAt(index)}', style: TextStyle(color: Colors.white)),
+                                        Text('${hora.elementAt(index)}', style: TextStyle(color: Colors.white)),
                                         Text(listTimeSlot.contains(index)
                                             ? 'Lleno' :
                                         maxTimeSlot > index ? 'No Disponible'
-                                              : 'Disponible', style: TextStyle(color: Colors.white))
+                                            : 'Disponible', style: TextStyle(color: Colors.white))
                                       ],
                                     ),
                                   ),
-                                  header: selectedTime == TIME_SLOT.elementAt(index) ? Icon(Icons.check) : null,
+                                  //header: selectedTime == TIME_SLOT.elementAt(index) ? Icon(Icons.check) : null,
+                                  header: selectedTime == hora.elementAt(index) ? Icon(Icons.check) : null,
                                 ),
                               ),
                             ));
@@ -404,7 +464,125 @@ class _BookingScreen extends State<BookingScreen> {
 
                   );
                 }
-            }
+              }
+          ),
+        )
+      ],
+    );
+  }*/
+
+  displayTimeSlot(BuildContext context, Servicios ser, Funcion fun) {
+    var now = selectedDate;
+    var hora = selectedSalon.horario.split(',');
+    //initializeDateFormatting('Es_es', 'es');
+    return Column(
+      children: [
+        Container(
+          color: Color(0xFF7CBF97),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        children: [
+                          Text('${DateFormat.EEEE().format(now)}', style: TextStyle(color: Colors.white)),
+                          Text('${now.day}', style: TextStyle(color: Colors.white)),
+                          Text('${DateFormat.MMMM().format(now)}', style: TextStyle(color: Colors.white)),
+                        ],
+                      ),
+                    ),
+                  )
+              ),
+              GestureDetector(
+                onTap: () {
+                  DatePicker.showDatePicker(context,
+                      showTitleActions: true,
+                      minTime: DateTime.now(), //Tiempo desde que puedo coger cita
+                      maxTime: DateTime.now().add(Duration(days: 31)) , //Tiempo hasta qu puedo coger cita
+                      onConfirm: (date) => setState(() => selectedDate = date)// next time 31 days ago
+                  );
+                },
+                child: Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Icon(Icons.calendar_today, color: Colors.white,),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+        Expanded(
+          child: FutureBuilder(
+              future: getMaxAvailableTimeSlot(selectedDate),
+              builder: (context, snapshot) {
+                if(snapshot.connectionState == ConnectionState.waiting)
+                  return Center(child: CircularProgressIndicator(),);
+                else
+                {
+                  var maxTimeSlot = snapshot.data as int;
+                  return FutureBuilder(
+                    //future: getTimeSlotOfServicios(ser, DateFormat('dd_MM_yy').format(selectedDate)),
+                    future: getTimeSlotOfServicios(ser, DateFormat('dd_MM_yy').format(selectedDate), fun),
+                    builder: (context, snapshot) {
+                      if(snapshot.connectionState == ConnectionState.waiting)
+                        return Center(child: CircularProgressIndicator(),);
+                      else{
+                        var listTimeSlot = snapshot.data as List<int>;
+                        return GridView.builder(
+                          //itemCount: TIME_SLOT.length,
+                            itemCount: hora.length,
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                                childAspectRatio: 1.5,
+                                mainAxisSpacing: 1,
+                                crossAxisSpacing: 2
+                            ),
+                            itemBuilder: (context,index) => GestureDetector(
+                              onTap: maxTimeSlot > index || listTimeSlot.contains(index) ? null : () {
+                                //setState(() => selectedTime = TIME_SLOT.elementAt(index));
+                                setState(() => selectedTime = hora.elementAt(index));
+                                setState(() => selectedTimeSlot = index);
+                              },
+                              child: Card(
+                                color: listTimeSlot.contains(index)
+                                    ? Color(0xFFBE4A4A)
+                                    : maxTimeSlot > index
+                                      ? Color(0xFFEE5E5E)
+                                      //: selectedTime == TIME_SLOT.elementAt(index)
+                                      : selectedTime == hora.elementAt(index)
+                                        ? Colors.white12
+                                        : Color(0xFF555555),
+                                child: GridTile(
+                                  child: Center(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        //Text('${TIME_SLOT.elementAt(index)}', style: TextStyle(color: Colors.white)),
+                                        Text('${hora.elementAt(index)}', style: TextStyle(color: Colors.white)),
+                                        Text(listTimeSlot.contains(index)
+                                            ? 'Lleno' :
+                                        maxTimeSlot > index ? 'No Disponible'
+                                            : 'Disponible', style: TextStyle(color: Colors.white))
+                                      ],
+                                    ),
+                                  ),
+                                  //header: selectedTime == TIME_SLOT.elementAt(index) ? Icon(Icons.check) : null,
+                                  header: selectedTime == hora.elementAt(index) ? Icon(Icons.check) : null,
+                                ),
+                              ),
+                            ));
+                      }
+                    },
+
+                  );
+                }
+              }
           ),
         )
       ],
@@ -413,11 +591,11 @@ class _BookingScreen extends State<BookingScreen> {
 
   confirmBooking(BuildContext context) {
     var hour = selectedTime.length <= 10 ?
-      int.parse(selectedTime.split(':')[0].substring(0,1)) :
-      int.parse(selectedTime.split(':')[0].substring(0,2));
+    int.parse(selectedTime.split(':')[0].substring(0,1)) :
+    int.parse(selectedTime.split(':')[0].substring(0,2));
     var minutes = selectedTime.length <= 10 ?
-      int.parse(selectedTime.split(':')[1].substring(0,1)) : //hora
-      int.parse(selectedTime.split(':')[1].substring(0,2)); //min
+    int.parse(selectedTime.split(':')[1].substring(0,1)) : //hora
+    int.parse(selectedTime.split(':')[1].substring(0,2)); //min
     var timeStamp = DateTime(
         selectedDate.year,
         selectedDate.month,
@@ -427,32 +605,32 @@ class _BookingScreen extends State<BookingScreen> {
     ).millisecondsSinceEpoch;
 
     var bookingModel = BookingModel(
-        servicioId: selectedServicio.docId,
-        servicioName: selectedServicio.name,
-        establecimiento: selectedEstablecimiento.name,
-        customerName: nameUser,
-        customerEmail: emailUser,
-        done: false,
-        salonAddress: selectedSalon.address,
-        salonId: selectedSalon.docId,
-        salonName: selectedSalon.name,
-        slot: selectedTimeSlot,
-        timeStamp: timeStamp,
-        time: '${selectedTime} - ${DateFormat('dd/MM/yyyy').format(selectedDate)}',
+      servicioId: selectedServicio.docId,
+      servicioName: selectedServicio.name,
+      establecimiento: selectedEstablecimiento.name,
+      customerName: nameUser,
+      customerEmail: emailUser,
+      done: false,
+      salonAddress: selectedSalon.address,
+      salonId: selectedSalon.docId,
+      salonName: selectedSalon.name,
+      slot: selectedTimeSlot,
+      timeStamp: timeStamp,
+      time: '${selectedTime} - ${DateFormat('dd/MM/yyyy').format(selectedDate)}',
     );
 
     var batch = FirebaseFirestore.instance.batch();
 
     DocumentReference servicioBooking =
-      selectedServicio.reference.collection(
+    selectedServicio.reference.collection(
         '${DateFormat('dd_MM_yy').format(selectedDate)}'
-      ).doc((selectedTimeSlot).toString());
+    ).doc((selectedTimeSlot).toString());
 
     DocumentReference userBooking = FirebaseFirestore.instance.collection('usuarios')
-    .doc(emailUser)
-    .collection('Booking_${FirebaseAuth.instance.currentUser?.uid}')
-    .doc();
-    
+        .doc(emailUser)
+        .collection('Booking_${FirebaseAuth.instance.currentUser?.uid}')
+        .doc();
+
     batch.set(servicioBooking, bookingModel.toJson());
     batch.set(userBooking, bookingModel.toJson());
     batch.commit().then((value) {
@@ -464,14 +642,14 @@ class _BookingScreen extends State<BookingScreen> {
       setState(() => selectedDate = DateTime.now());
       setState(() => selectedServicio = Servicios(userName: '', name: '', docId: ''));
       setState(() => selectedEstablecimiento = Establecimientos(name: '', address: ''));
-      setState(() => selectedSalon = Salon(name: '', address: '', docId: ''));
+      setState(() => selectedSalon = Salon(name: '', address: '', horario: '', docId: ''));
       setState(() => currentStep = 1);
       setState(() => selectedTime = '');
       setState(() => selectedTimeSlot = -1);
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => BookingScreen(),
-        )
+          MaterialPageRoute(
+            builder: (context) => BookingScreen(),
+          )
       );
     });
 
@@ -508,46 +686,50 @@ class _BookingScreen extends State<BookingScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Expanded(child: Padding(padding: EdgeInsets.all(24), child: Image.asset('assets/logo_reda.png'),)),
+        //Expanded(child: Padding(padding: EdgeInsets.all(12), child: Image.asset('assets/logo_reda.png'),)),
+        Expanded(child: Image.asset('assets/logo_reda.png'),),
         Expanded(child: Container(
           width: MediaQuery.of(context).size.width,
           child: Card(child: Padding(padding: EdgeInsets.all(16), child:
-            Column(
-              children: [
-                Text('Gracias por confiar en nuestros servicios'.toUpperCase()),
-                Text('Informacion de la reserva'.toUpperCase()),
-                SizedBox(height: 12,),
-                Row(children: [
-                  Icon(Icons.calendar_today),
-                  SizedBox(width: 20,),
-                  Text('${selectedTime} - ${DateFormat('dd/MM/yyyy').format(selectedDate)}')
-                ],),
-                SizedBox(height: 10,),
-                Row(children: [
-                  Icon(Icons.person),
-                  SizedBox(width: 20,),
-                  Text('${selectedServicio.name}')
-                ],),
-                SizedBox(height: 10,),
-                Divider(thickness: 1,),
-                Row(children: [
-                  Icon(Icons.home),
-                  SizedBox(width: 20,),
-                  Text('${selectedSalon.name}')
-                ],),
-                SizedBox(height: 10,),
-                Row(children: [
-                  Icon(Icons.location_on),
-                  SizedBox(width: 20,),
-                  Text('${selectedServicio.name}')
-                ],),
-                ElevatedButton(onPressed: () => confirmBooking(context), child: Text('Confirmar'),
+          Column(
+          //ListView(
+            children: [
+              Text('Gracias por confiar en nuestros servicios'.toUpperCase()),
+              Text('Informacion de la reserva'.toUpperCase()),
+              SizedBox(height: 12,),
+              Row(children: [
+                Icon(Icons.calendar_today),
+                SizedBox(width: 20,),
+                Text('${selectedTime} - ${DateFormat('dd/MM/yyyy').format(selectedDate)}')
+              ],),
+              SizedBox(height: 10,),
+              Row(children: [
+                Icon(Icons.person),
+                SizedBox(width: 20,),
+                Text('${selectedServicio.name}')
+              ],),
+              SizedBox(height: 10,),
+              Divider(thickness: 1,),
+              Row(children: [
+                Icon(Icons.home),
+                SizedBox(width: 20,),
+                Text('${selectedSalon.name}')
+              ],),
+              SizedBox(height: 10,),
+              Row(children: [
+                Icon(Icons.location_on),
+                SizedBox(width: 20,),
+                Text('${selectedServicio.name}')
+              ],),
+              ElevatedButton(onPressed: () => confirmBooking(context), child: Text('Confirmar'),
                 style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.black26)),)
-              ],
-            ),),),
+            ],
+          ),),),
         ))
       ],
     );
   }
 
 }
+
+
