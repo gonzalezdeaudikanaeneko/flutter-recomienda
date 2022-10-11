@@ -72,5 +72,24 @@ Future<List<int>> getTimeSlotOfServicios(Servicios ser, String date, Funcion fun
   snapshot.docs.forEach((element) {
     result.add(int.parse(element.id));
   });
+  /*int valor = result.length;
+  int pos = 0;
+  int numero;
+  while(valor > 0) {
+    numero = fun.slot-1;
+    while (numero > 0) {
+      result.add((result.elementAt(pos)) - numero);
+      numero--;
+    }
+    pos++;
+    valor--;
+  }*/
+  int pos = 0;
+  for(var i = result.length; i > 0 ; i--){
+    for(var j = fun.slot - 1; j > 0; j--){
+      result.add((result.elementAt(pos)) - j);
+    }
+    pos++;
+  }
   return result;
 }

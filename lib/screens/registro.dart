@@ -22,6 +22,7 @@ class _HomePageWidgetState extends State<Registro> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: (MediaQuery.of(context).size.height)/15,
         backgroundColor: Colors.black45,
         title: Text('Registro'),
         centerTitle: true,
@@ -82,14 +83,14 @@ class _HomePageWidgetState extends State<Registro> {
                 ),
               ),
               Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
+                padding: const EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
                 child: Text(
                   '1ºApellido',
                   style: FlutterFlowTheme.of(context).bodyText1.override(
                         fontFamily: 'Poppins',
                         fontSize: 18,
                         fontWeight: FontWeight.w300,
-                      ),
+                  ),
                 ),
               ),
               Padding(

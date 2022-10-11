@@ -7,7 +7,6 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:im_stepper/stepper.dart';
-import 'package:intl/date_symbol_data_file.dart';
 import 'package:intl/intl.dart';
 import 'package:recomienda_flutter/cloud/todos_establecimientos.dart';
 import 'package:recomienda_flutter/home_page_widget.dart';
@@ -214,8 +213,6 @@ class _BookingScreen extends State<BookingScreen> {
     return FutureBuilder(
         future: getSalones(establecimiento),
         builder: (context, AsyncSnapshot<List<Salon>> snapshot){
-          print('0- servicios.length');
-          print(snapshot.data);
           if(snapshot.connectionState == ConnectionState.waiting)
             return Center(child: CircularProgressIndicator(),);
           else{
@@ -339,7 +336,8 @@ class _BookingScreen extends State<BookingScreen> {
                               ? Icon(Icons.check)
                               : null,
                           title: Text(
-                            '${funciones[index].name} (${funciones[index].slot})',
+                            //'${funciones[index].name} (${funciones[index].slot})',
+                            '${funciones[index].name} (${15 * funciones[index].slot} min)',
                           )
                         ),
                       ),
@@ -474,7 +472,6 @@ class _BookingScreen extends State<BookingScreen> {
   displayTimeSlot(BuildContext context, Servicios ser, Funcion fun) {
     var now = selectedDate;
     var hora = selectedSalon.horario.split(',');
-    //initializeDateFormatting('Es_es', 'es');
     return Column(
       children: [
         Container(
@@ -565,9 +562,8 @@ class _BookingScreen extends State<BookingScreen> {
                                       children: [
                                         //Text('${TIME_SLOT.elementAt(index)}', style: TextStyle(color: Colors.white)),
                                         Text('${hora.elementAt(index)}', style: TextStyle(color: Colors.white)),
-                                        Text(listTimeSlot.contains(index)
-                                            ? 'Lleno' :
-                                        maxTimeSlot > index ? 'No Disponible'
+                                        Text(listTimeSlot.contains(index) ? 'Lleno'
+                                            : maxTimeSlot > index ? 'No Disponible'
                                             : 'Disponible', style: TextStyle(color: Colors.white))
                                       ],
                                     ),
@@ -674,7 +670,8 @@ class _BookingScreen extends State<BookingScreen> {
             minutes + 30
         ),
         iosParams: IOSParams(reminder: Duration(minutes: 30)),
-        androidParams: AndroidParams(emailInvites: [], )
+        androidParams: AndroidParams(emailInvites: [], ),
+
     );
     Add2Calendar.addEvent2Cal(event).then((value) {
       print('object');
