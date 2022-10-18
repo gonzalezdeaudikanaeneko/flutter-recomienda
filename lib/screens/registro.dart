@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:recomienda_flutter/home_page_widget.dart';
 
 import '../flutter_flow/flutter_flow_icon_button.dart';
@@ -20,6 +21,20 @@ class _HomePageWidgetState extends State<Registro> {
 
   @override
   Widget build(BuildContext context) {
+    late String? existe = FirebaseAuth.instance.currentUser?.phoneNumber;
+    late String? existe2 = FirebaseAuth.instance.currentUser?.displayName;
+    late String num;
+    late String nom;
+    if(existe == null){
+      num = '';
+    }else{
+      num = FirebaseAuth.instance.currentUser?.phoneNumber as String;
+    }
+    if(existe2 == null){
+      nom = '';
+    }else{
+      nom = FirebaseAuth.instance.currentUser?.displayName as String;
+    }
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: (MediaQuery.of(context).size.height)/15,
@@ -74,7 +89,8 @@ class _HomePageWidgetState extends State<Registro> {
               Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 10),
                 child: Text(
-                  'Nombre',
+                  //'Nombre',
+                  nom == '' ? '-' : nom,
                   style: FlutterFlowTheme.of(context).bodyText1.override(
                         fontFamily: 'Poppins',
                         fontSize: 18,
@@ -96,7 +112,8 @@ class _HomePageWidgetState extends State<Registro> {
               Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
                 child: Text(
-                  'Numero de telefono',
+                  //'Numero de telefono',
+                  num == '' ? '-' : num,
                   style: FlutterFlowTheme.of(context).bodyText1.override(
                         fontFamily: 'Poppins',
                         fontSize: 18,
@@ -107,7 +124,8 @@ class _HomePageWidgetState extends State<Registro> {
               Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
                 child: Text(
-                  'Gmail',
+                  //'Correo',
+                  FirebaseAuth.instance.currentUser?.email as String,
                   style: FlutterFlowTheme.of(context).bodyText1.override(
                         fontFamily: 'Poppins',
                         fontSize: 18,

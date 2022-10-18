@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:recomienda_flutter/model/servicios.dart';
 
 import '../model/establecimientos.dart';
@@ -92,4 +93,22 @@ Future<List<int>> getTimeSlotOfServicios(Servicios ser, String date, Funcion fun
     pos++;
   }
   return result;
+}
+
+Future<ListResult> listLogo() async {
+  FirebaseStorage storage = FirebaseStorage.instance;
+  ListResult results = await storage.ref('reda').listAll();
+
+  results.items.forEach((element) {
+    print('Archivo $element');
+  });
+
+  return results;
+
+}
+
+Future<String> downloadURL(String nombre) async{
+  FirebaseStorage storage = FirebaseStorage.instance;
+  String URL = await storage.ref('$nombre/logo.png').getDownloadURL();
+  return URL;
 }

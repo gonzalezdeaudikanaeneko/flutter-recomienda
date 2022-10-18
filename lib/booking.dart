@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:add_2_calendar/add_2_calendar.dart';
@@ -33,7 +34,7 @@ class _BookingScreen extends State<BookingScreen> {
   String nameUser = FirebaseAuth.instance.currentUser?.displayName as String;
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   int currentStep = 1;
-  Establecimientos selectedEstablecimiento = Establecimientos(name: '', address: '');
+  Establecimientos selectedEstablecimiento = Establecimientos(name: '', address: '', imagen: '');
   Salon selectedSalon = Salon(name: '', address: '', horario: '', docId: '');
   Servicios selectedServicio = Servicios(name: '', userName: '', docId: '');
   Funcion selectedFuncion = Funcion(name: '', slot: 0, docId: '');
@@ -87,6 +88,7 @@ class _BookingScreen extends State<BookingScreen> {
         backgroundColor: Colors.white,
         body: Column(
           children: [
+            SizedBox(height: MediaQuery.of(context).size.height / 150,),
             NumberStepper(
               stepRadius: 14,
               activeStep: currentStep - 1,
@@ -100,6 +102,7 @@ class _BookingScreen extends State<BookingScreen> {
               activeStepColor: Colors.grey,
               numberStyle: TextStyle(color: Colors.white),
             ),
+            SizedBox(height: MediaQuery.of(context).size.height / 150,),
             Expanded(
               flex: 10,
               child: currentStep == 1
@@ -513,6 +516,7 @@ class _BookingScreen extends State<BookingScreen> {
             ],
           ),
         ),
+        SizedBox(height: MediaQuery.of(context).size.height / 150,),
         Expanded(
           child: FutureBuilder(
               future: getMaxAvailableTimeSlot(selectedDate),
@@ -546,6 +550,9 @@ class _BookingScreen extends State<BookingScreen> {
                                 setState(() => selectedTimeSlot = index);
                               },
                               child: Card(
+                                shape: BeveledRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
                                 color: listTimeSlot.contains(index)
                                     ? Color(0xFFBE4A4A)
                                     : maxTimeSlot > index
@@ -561,7 +568,7 @@ class _BookingScreen extends State<BookingScreen> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         //Text('${TIME_SLOT.elementAt(index)}', style: TextStyle(color: Colors.white)),
-                                        Text('${hora.elementAt(index)}', style: TextStyle(color: Colors.white)),
+                                        Text('${hora.elementAt(index).substring(0, 5)}', style: TextStyle(color: Colors.white)),
                                         Text(listTimeSlot.contains(index) ? 'Lleno'
                                             : maxTimeSlot > index ? 'No Disponible'
                                             : 'Disponible', style: TextStyle(color: Colors.white))
@@ -575,7 +582,6 @@ class _BookingScreen extends State<BookingScreen> {
                             ));
                       }
                     },
-
                   );
                 }
               }
@@ -637,7 +643,7 @@ class _BookingScreen extends State<BookingScreen> {
 
       setState(() => selectedDate = DateTime.now());
       setState(() => selectedServicio = Servicios(userName: '', name: '', docId: ''));
-      setState(() => selectedEstablecimiento = Establecimientos(name: '', address: ''));
+      setState(() => selectedEstablecimiento = Establecimientos(name: '', address: '', imagen: ''));
       setState(() => selectedSalon = Salon(name: '', address: '', horario: '', docId: ''));
       setState(() => currentStep = 1);
       setState(() => selectedTime = '');
@@ -678,13 +684,30 @@ class _BookingScreen extends State<BookingScreen> {
     });
   }
 
-  displayConfirm(BuildContext context) {
+displayConfirm(BuildContext context){
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        //Expanded(child: Padding(padding: EdgeInsets.all(12), child: Image.asset('assets/logo_reda.png'),)),
-        Expanded(child: Image.asset('assets/logo_reda.png'),),
+        SizedBox(height: MediaQuery.of(context).size.height / 30,),
+        FutureBuilder(
+          future: downloadURL(selectedEstablecimiento.name),
+          builder: (context, AsyncSnapshot<String >snapshot) {
+            if(snapshot.connectionState == ConnectionState.done && snapshot.hasData){
+              return Container(
+                  child: Image.network(
+                    snapshot.data!,
+                    width: MediaQuery.of(context).size.width/2,
+                    height: MediaQuery.of(context).size.height/5
+                  )
+              );
+            }
+            if(snapshot.connectionState == ConnectionState.done){
+              return CircularProgressIndicator();
+            }
+            return Container();
+          },
+        ),
         Expanded(child: Container(
           width: MediaQuery.of(context).size.width,
           child: Card(child: Padding(padding: EdgeInsets.all(16), child:
@@ -726,7 +749,6 @@ class _BookingScreen extends State<BookingScreen> {
       ],
     );
   }
-
 }
 
 

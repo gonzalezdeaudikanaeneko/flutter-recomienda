@@ -18,7 +18,7 @@ class HomePageWidget2 extends StatefulWidget {
 
 class _HomePageWidgetState extends State<HomePageWidget2> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
-
+  late final TextEditingController usuario = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,6 +85,7 @@ class _HomePageWidgetState extends State<HomePageWidget2> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
+                    //EditableText(controller: usuario, focusNode: FocusNode(), cursorColor: Colors.white, backgroundCursorColor: Color(0xFF506F52), style: TextStyle(),),
                     SizedBox(
                       height: 10,
                     ),
@@ -173,6 +174,10 @@ class _HomePageWidgetState extends State<HomePageWidget2> {
                 future: Authentication.initializeFirebase(context: context),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
+                    print('snapshot.error');
+                    print(snapshot.error);
+                    print('snapshot.connectionState');
+                    print(snapshot.connectionState);
                     return Text('Error initializing Firebase');
                   } else if (snapshot.connectionState == ConnectionState.done) {
                     return GoogleSignInButton();
