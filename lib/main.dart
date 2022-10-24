@@ -35,12 +35,10 @@ class _MyAppState extends State<MyApp> {
       title: 'Recomienda',
       locale: _locale,
       supportedLocales: const [Locale('en', '')],
-      //supportedLocales: Locale('es'),
       theme: ThemeData(brightness: Brightness.light),
       darkTheme: ThemeData(brightness: Brightness.dark),
       themeMode: _themeMode,
       home: HomePageWidget2(),
-      //home: SignInScreen(),
     );
   }
 }
