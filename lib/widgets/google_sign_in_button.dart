@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:recomienda_flutter/booking.dart';
 import 'package:recomienda_flutter/cloud/user_ref.dart';
 import 'package:recomienda_flutter/model/usuarios.dart';
+import 'package:recomienda_flutter/screens/inicio.dart';
 import 'package:recomienda_flutter/screens/registro.dart';
 import 'package:recomienda_flutter/utils/authentication.dart';
 
@@ -56,7 +57,8 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
                 if(snapshotUsuario.exists){
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
-                      builder: (context) => BookingScreen(
+                      //builder: (context) => BookingScreen(
+                      builder: (context) => Inicio(
                         //user: user,
                       ),
                     ),

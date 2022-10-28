@@ -60,6 +60,7 @@ class _BookingScreen extends State<BookingScreen> {
           toolbarHeight: (MediaQuery.of(context).size.height)/15,
           backgroundColor: Colors.black45,
           title: Text('Reservas'),
+          centerTitle: true,
           leading: ElevatedButton(
             style: ElevatedButton.styleFrom(
               primary: Color(0xFF7CBF97),
@@ -491,7 +492,7 @@ class _BookingScreen extends State<BookingScreen> {
     var bookingModel = BookingModel(
       servicioId: selectedServicio.docId,
       servicioName: selectedServicio.name,
-      establecimiento: selectedEstablecimiento.name,
+      establecimiento: selectedEstablecimiento.address,
       customerName: nameUser,
       customerEmail: emailUser,
       done: false,
@@ -500,7 +501,8 @@ class _BookingScreen extends State<BookingScreen> {
       salonName: selectedSalon.name,
       slot: selectedTimeSlot,
       timeStamp: timeStamp,
-      time: '${selectedTime} - ${DateFormat('dd/MM/yyyy').format(selectedDate)}',
+      time: '${selectedTime.substring(0,5)} - ${DateFormat('dd/MM/yyyy').format(selectedDate)}',
+      duration: selectedFuncion.slot * 15,
     );
 
     var batch = FirebaseFirestore.instance.batch();
@@ -515,7 +517,15 @@ class _BookingScreen extends State<BookingScreen> {
         .collection('Booking_${FirebaseAuth.instance.currentUser?.uid}')
         .doc();
 
-    batch.set(servicioBooking, bookingModel.toJson());
+    for(var i = 0; i < selectedFuncion.slot; i++){
+      DocumentReference servicioBooking =
+      selectedServicio.reference.collection(
+          '${DateFormat('dd_MM_yy').format(selectedDate)}'
+      ).doc((selectedTimeSlot + i).toString());
+      batch.set(servicioBooking, bookingModel.toJson());
+    }
+
+    //batch.set(servicioBooking, bookingModel.toJson());
     batch.set(userBooking, bookingModel.toJson());
     batch.commit().then((value) {
       //Snackbar simple a pie de la app
@@ -612,7 +622,7 @@ class _BookingScreen extends State<BookingScreen> {
               Row(children: [
                 Icon(Icons.calendar_today),
                 SizedBox(width: 20,),
-                Text('${selectedTime} - ${DateFormat('dd/MM/yyyy').format(selectedDate)}')
+                Text('${selectedTime.substring(0,5)} - ${DateFormat('dd/MM/yyyy').format(selectedDate)}')
               ],),
               SizedBox(height: 10,),
               Row(children: [
@@ -631,8 +641,9 @@ class _BookingScreen extends State<BookingScreen> {
               Row(children: [
                 Icon(Icons.location_on),
                 SizedBox(width: 20,),
-                Text('${selectedServicio.name}')
+                Text('${selectedEstablecimiento.address}')
               ],),
+              SizedBox(height: 20,),
               ElevatedButton(onPressed: () => confirmBooking(context), child: Text('Confirmar'),
                 style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.black26)),)
             ],
@@ -641,6 +652,7 @@ class _BookingScreen extends State<BookingScreen> {
       ],
     );
   }
+
 }
 
 

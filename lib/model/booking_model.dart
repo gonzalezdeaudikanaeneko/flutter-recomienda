@@ -4,7 +4,7 @@ class BookingModel {
   late String docId, servicioId, servicioName, establecimiento, customerName,
       customerEmail, salonAddress, salonId, salonName, time;
   late bool done;
-  late int slot, timeStamp;
+  late int slot, timeStamp, duration;
 
   DocumentReference? reference;
 
@@ -19,6 +19,7 @@ class BookingModel {
     required this.salonName,
     required this.time,
     required this.done,
+    required this.duration,
     required this.slot,
     required this.timeStamp});
 
@@ -34,6 +35,7 @@ class BookingModel {
     salonName = json['salonName'];
     time = json['time'];
     done = json['done'] as bool;
+    duration = int.parse(json['duration'] == null ? '-1' : json['duration'].toString());
     slot = int.parse(json['slot'] == null ? '-1' : json['slot'].toString());
     timeStamp = int.parse(json['timeStamp'] == null ? '-1' : json['timeStamp'].toString());
   }
@@ -50,6 +52,7 @@ class BookingModel {
     data['salonName'] = this.salonName;
     data['time'] = this.time;
     data['done'] = this.done;
+    data['duration'] = this.duration;
     data['slot'] = this.slot;
     data['timeStamp'] = this.timeStamp;
 

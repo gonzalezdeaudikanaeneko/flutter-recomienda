@@ -56,7 +56,7 @@ class UserHistory extends ConsumerWidget{
             var userBooking = snapshot.data as List<BookingModel>;
             if(userBooking == null || userBooking.length == 0)
               return Center(child: Text('No se cargan el historial'),);
-            else
+            else {
               return FutureBuilder(
                   future: syncTime(),
                   builder: (context,snapshot){
@@ -88,7 +88,7 @@ class UserHistory extends ConsumerWidget{
                                           children: [
                                             Column(
                                               children: [
-                                                Text('Date'),
+                                                Text('Dia', style: TextStyle(fontWeight: FontWeight.bold)),
                                                 Text(DateFormat('dd/MM/yy').format(
                                                     DateTime.fromMillisecondsSinceEpoch(
                                                         userBooking[index].timeStamp)
@@ -97,9 +97,8 @@ class UserHistory extends ConsumerWidget{
                                             ),
                                             Column(
                                               children: [
-                                                Text('Time'),
-                                                Text(TIME_SLOT.elementAt(userBooking[index].slot)),
-
+                                                Text('Hora', style: TextStyle(fontWeight: FontWeight.bold)),
+                                                Text(TIME_SLOT.elementAt(userBooking[index].slot).substring(0,5)),
                                               ],
                                             )
                                           ],
@@ -128,13 +127,13 @@ class UserHistory extends ConsumerWidget{
                                           context: context,
                                           type: AlertType.warning,
                                           title: 'ELIMINAR RESERVA',
-                                          desc: 'Por favor, eliminela de su Calendario tambien',
+                                          desc: 'Por favor, eliminela de su calendario tambien',
                                           buttons: [
-                                            DialogButton(child: Text('CANCELAR'), onPressed: () => Navigator.of(context).pop(), color: Colors.black,),
+                                            DialogButton(child: Text('CANCELAR'), onPressed: () => Navigator.of(context).pop(), color: Colors.redAccent,),
                                             DialogButton(child: Text('ELIMINAR'), onPressed: () {
                                               cancelBooking(context, userBooking[index]);
                                               Navigator.of(context).pop();
-                                            }, color: Colors.black,),
+                                            }, color: Colors.lightGreen,),
                                           ]
                                       ).show();
                                     },
@@ -173,6 +172,7 @@ class UserHistory extends ConsumerWidget{
                     }
                   }
               );
+            }
           }
 
         }

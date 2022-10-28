@@ -56,16 +56,6 @@ Future<List<Funcion>> getFunciones(Salon ser) async {
   return funciones;
 }
 
-/*Future<List<int>> getTimeSlotOfServicios(Servicios ser, String date) async {
-  List<int> result = List<int>.empty(growable: true);
-  var bookingRef = ser.reference.collection(date);
-  QuerySnapshot snapshot = await bookingRef.get();
-  snapshot.docs.forEach((element) {
-    result.add(int.parse(element.id));
-  });
-  return result;
-}*/
-
 Future<List<int>> getTimeSlotOfServicios(Servicios ser, String date, Funcion fun) async {
   List<int> result = List<int>.empty(growable: true);
   var bookingRef = ser.reference.collection(date);
@@ -73,18 +63,7 @@ Future<List<int>> getTimeSlotOfServicios(Servicios ser, String date, Funcion fun
   snapshot.docs.forEach((element) {
     result.add(int.parse(element.id));
   });
-  /*int valor = result.length;
-  int pos = 0;
-  int numero;
-  while(valor > 0) {
-    numero = fun.slot-1;
-    while (numero > 0) {
-      result.add((result.elementAt(pos)) - numero);
-      numero--;
-    }
-    pos++;
-    valor--;
-  }*/
+
   int pos = 0;
   for(var i = result.length; i > 0 ; i--){
     for(var j = fun.slot - 1; j > 0; j--){
