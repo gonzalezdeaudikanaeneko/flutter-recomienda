@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:recomienda_flutter/booking.dart';
 import 'package:recomienda_flutter/cloud/user_ref.dart';
 import 'package:recomienda_flutter/model/usuarios.dart';
+import 'package:recomienda_flutter/screens/InicioEstablecimiento.dart';
 import 'package:recomienda_flutter/screens/inicio.dart';
 import 'package:recomienda_flutter/screens/registro.dart';
 import 'package:recomienda_flutter/utils/authentication.dart';
@@ -19,6 +20,18 @@ class GoogleSignInButton extends StatefulWidget {
 class _GoogleSignInButtonState extends State<GoogleSignInButton> {
   bool _isSigningIn = false;
   //final Stream<QuerySnapshot> usuarios = FirebaseFirestore.instance.collection('usuarios').snapshots();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void setState(_isSigningIn) {
+    if(mounted) {
+      super.setState(_isSigningIn);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,18 +68,23 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
                     .get();
 
                 if(snapshotUsuario.exists){
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                      //builder: (context) => BookingScreen(
-                      builder: (context) => Inicio(
-                        //user: user,
+                  if (snapshotUsuario.get('isComerce') == true){
+                    // Pagina para los establecimientos
+                    Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => InicioEstablecimiento(),
+                        )
+                    );
+                  // Pagina para los usuarios no estableciminetos
+                  }else{
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        //builder: (context) => BookingScreen(
+                        builder: (context) => Inicio(),
                       ),
-                    ),
-                  );
-                }
-                /*if(snapshotUsuario.exists){
-                  displayHome();
-                }*/else{
+                    );
+                  }
+                }else{
                   /*usuarios
                       .doc(user?.email) // <-- Document ID
                       .set({'nombre': user?.displayName, 'email': user?.email}) // <-- Your data

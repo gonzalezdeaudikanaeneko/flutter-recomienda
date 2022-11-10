@@ -21,8 +21,7 @@ class Inicio extends StatelessWidget {
                 height: 200,
                 child: ElevatedButton(
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                        Color(0xFF7CBF97)),
+                    backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF7CBF97)),
                   ),
                   onPressed: () {
                     Navigator.of(context).pushReplacement(

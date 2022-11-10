@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:recomienda_flutter/booking.dart';
+import 'package:recomienda_flutter/model/usuarios.dart';
 import 'package:recomienda_flutter/screens/user_history.dart';
 
+import '../cloud/user_ref.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
 import '../flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
@@ -16,9 +18,6 @@ class HomePageWidget extends StatefulWidget {
 class _HomePageWidgetState extends State<HomePageWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   String emailUser = FirebaseAuth.instance.currentUser?.email as String;
-  String nameUser = FirebaseAuth.instance.currentUser?.displayName as String;
-  //String PhoneUser = FirebaseAuth.instance.currentUser?.phoneNumber as String;
-  //String numberUser = FirebaseAuth.instance.currentUser?.phoneNumber as String;
 
   @override
   Widget build(BuildContext context) {
@@ -29,11 +28,8 @@ class _HomePageWidgetState extends State<HomePageWidget> {
         centerTitle: true,
         leading: ElevatedButton(
           onPressed: () async {
-            //await Authentication.signOut(context: context);
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
-                //builder: (context) => UserInfoScreen(
-                //builder: (context) => BookingCalendarDemoApp(
                 builder: (context) => BookingScreen(),
               ),
             );
@@ -58,265 +54,191 @@ class _HomePageWidgetState extends State<HomePageWidget> {
       ),
       key: scaffoldKey,
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-      body: SafeArea(
-        child: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(16, 16, 16, 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Image.asset(
-                      'assets/logo.png',
-                      width: 100,
-                      height: 100,
-                      fit: BoxFit.cover,
-                    ),
-                    Align(
-                      alignment: AlignmentDirectional(0.05, 0),
-                      child: Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(25, 0, 0, 0),
-                        child: FFButtonWidget(
-                          onPressed: () {
-                            print('Button pressed ...');
-                          },
-                          //text: 'nko_glez',
-                          text: nameUser,
-                          options: FFButtonOptions(
-                            width: 200,
-                            height: 40,
-                            color: Color(0xFF506F52),
-                            textStyle:
-                            FlutterFlowTheme.of(context).subtitle2.override(
-                              fontFamily: 'Poppins',
-                              color: Colors.white,
-                              fontWeight: FontWeight.w200,
+      body: FutureBuilder(
+          future: getUserProfiles(emailUser),
+          builder: (context, AsyncSnapshot<Usuarios> snapshot){
+            if(snapshot.connectionState == ConnectionState.waiting)
+              return Center(child: CircularProgressIndicator());
+            else{
+              return SafeArea(
+                child: GestureDetector(
+                  onTap: () => FocusScope.of(context).unfocus(),
+                  child: Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(16, 16, 16, 16),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Image.asset(
+                              'assets/logo.png',
+                              width: 100,
+                              height: 100,
+                              fit: BoxFit.cover,
                             ),
-                            borderSide: BorderSide(
-                              color: Colors.transparent,
-                              width: 1,
+                            Align(
+                              alignment: AlignmentDirectional(0.05, 0),
+                              child: Padding(
+                                padding: EdgeInsetsDirectional.fromSTEB(25, 0, 0, 0),
+                                child: FFButtonWidget(
+                                  onPressed: () {
+                                    print('Button pressed ...');
+                                  },
+                                  text: snapshot.data?.nombre as String,
+                                  options: FFButtonOptions(
+                                    width: 200,
+                                    height: 40,
+                                    color: Color(0xFF506F52),
+                                    textStyle:
+                                    FlutterFlowTheme.of(context).subtitle2.override(
+                                      fontFamily: 'Poppins',
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w200,
+                                    ),
+                                    borderSide: BorderSide(
+                                      color: Colors.transparent,
+                                      width: 1,
+                                    ),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                              ),
                             ),
-                            borderRadius: BorderRadius.circular(10),
+                          ],
+                        ),
+                        Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(0, 25, 0, 0),
+                          child: Text(
+                            'Direccion de correo electronico ',
+                            style: FlutterFlowTheme.of(context).bodyText1,
                           ),
                         ),
-                      ),
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(0, 25, 0, 0),
-                  child: Text(
-                    'Direccion de correo electronico ',
-                    style: FlutterFlowTheme.of(context).bodyText1,
-                  ),
-                ),
-                //Divider(),
-                Text(
-                  //'name@gmail.com',
-                  emailUser,
-                  style: FlutterFlowTheme.of(context).bodyText1.override(
-                    fontFamily: 'Poppins',
-                    color: Color(0xFF9E9E9E),
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
-                  child: FFButtonWidget(
-                    onPressed: () {
-                      print('Button pressed ...');
-                    },
-                    text: 'Cambiar',
-                    options: FFButtonOptions(
-                      width: 130,
-                      height: 30,
-                      color: Color(0xFF506F52),
-                      textStyle:
-                      FlutterFlowTheme.of(context).subtitle2.override(
-                        fontFamily: 'Poppins',
-                        color: Colors.white,
-                        fontWeight: FontWeight.w100,
-                      ),
-                      borderSide: BorderSide(
-                        color: Colors.transparent,
-                        width: 1,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(0, 30, 0, 0),
-                  child: Text(
-                    'Contraseña',
-                    style: FlutterFlowTheme.of(context).bodyText1,
-                  ),
-                ),
-                //Divider(),
-                Text(
-                  'XXXXXXXX',
-                  style: FlutterFlowTheme.of(context).bodyText1.override(
-                    fontFamily: 'Poppins',
-                    color: Color(0xFF9E9E9E),
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(20, 20, 20, 20),
-                  child: FFButtonWidget(
-                    onPressed: () {
-                      print('Button pressed ...');
-                    },
-                    text: 'Cambiar',
-                    options: FFButtonOptions(
-                      width: 130,
-                      height: 30,
-                      color: Color(0xFF506F52),
-                      textStyle:
-                      FlutterFlowTheme.of(context).subtitle2.override(
-                        fontFamily: 'Poppins',
-                        color: Colors.white,
-                        fontWeight: FontWeight.w100,
-                      ),
-                      borderSide: BorderSide(
-                        color: Colors.transparent,
-                        width: 1,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 0),
-                  child: Text(
-                    'Nombre de usuario',
-                    style: FlutterFlowTheme.of(context).bodyText1,
-                  ),
-                ),
-                //Divider(),
-                Text(
-                  //'Name ',
-                  nameUser,
-                  style: FlutterFlowTheme.of(context).bodyText1.override(
-                    fontFamily: 'Poppins',
-                    color: Color(0xFF9E9E9E),
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
-                  child: FFButtonWidget(
-                    onPressed: () {
-                      print('Button pressed ...');
-                    },
-                    text: 'Cambiar',
-                    options: FFButtonOptions(
-                      width: 130,
-                      height: 30,
-                      color: Color(0xFF506F52),
-                      textStyle:
-                      FlutterFlowTheme.of(context).subtitle2.override(
-                        fontFamily: 'Poppins',
-                        color: Colors.white,
-                        fontWeight: FontWeight.w100,
-                      ),
-                      borderSide: BorderSide(
-                        color: Colors.transparent,
-                        width: 1,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
+                        //Divider(),
+                        Text(
+                          //'name@gmail.com',
+                          snapshot.data?.email as String,
+                          style: FlutterFlowTheme.of(context).bodyText1.override(
+                            fontFamily: 'Poppins',
+                            color: Color(0xFF9E9E9E),
+                            fontWeight: FontWeight.w300,
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
+                          child: FFButtonWidget(
+                            onPressed: () {
+                              print('Button pressed ...');
+                            },
+                            text: 'Cambiar',
+                            options: FFButtonOptions(
+                              width: 130,
+                              height: 30,
+                              color: Color(0xFF506F52),
+                              textStyle:
+                              FlutterFlowTheme.of(context).subtitle2.override(
+                                fontFamily: 'Poppins',
+                                color: Colors.white,
+                                fontWeight: FontWeight.w100,
+                              ),
+                              borderSide: BorderSide(
+                                color: Colors.transparent,
+                                width: 1,
+                              ),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(0, 30, 0, 0),
+                          child: Text(
+                            'Edad',
+                            style: FlutterFlowTheme.of(context).bodyText1,
+                          ),
+                        ),
+                        //Divider(),
+                        Text(
+                          snapshot.data?.edad as String,
+                          style: FlutterFlowTheme.of(context).bodyText1.override(
+                            fontFamily: 'Poppins',
+                            color: Color(0xFF9E9E9E),
+                            fontWeight: FontWeight.w300,
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(20, 20, 20, 20),
+                          child: FFButtonWidget(
+                            onPressed: () {
+                              print('Button pressed ...');
+                            },
+                            text: 'Cambiar',
+                            options: FFButtonOptions(
+                              width: 130,
+                              height: 30,
+                              color: Color(0xFF506F52),
+                              textStyle:
+                              FlutterFlowTheme.of(context).subtitle2.override(
+                                fontFamily: 'Poppins',
+                                color: Colors.white,
+                                fontWeight: FontWeight.w100,
+                              ),
+                              borderSide: BorderSide(
+                                color: Colors.transparent,
+                                width: 1,
+                              ),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 0),
+                          child: Text(
+                            'Telefono',
+                            style: FlutterFlowTheme.of(context).bodyText1,
+                          ),
+                        ),
+                        //Divider(),
+                        Text(
+                          snapshot.data?.telefono as String,
+                          style: FlutterFlowTheme.of(context).bodyText1.override(
+                            fontFamily: 'Poppins',
+                            color: Color(0xFF9E9E9E),
+                            fontWeight: FontWeight.w300,
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
+                          child: FFButtonWidget(
+                            onPressed: () {
+                              print('Button pressed ...');
+                            },
+                            text: 'Cambiar',
+                            options: FFButtonOptions(
+                              width: 130,
+                              height: 30,
+                              color: Color(0xFF506F52),
+                              textStyle:
+                              FlutterFlowTheme.of(context).subtitle2.override(
+                                fontFamily: 'Poppins',
+                                color: Colors.white,
+                                fontWeight: FontWeight.w100,
+                              ),
+                              borderSide: BorderSide(
+                                color: Colors.transparent,
+                                width: 1,
+                              ),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                /*Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 0),
-                  child: Text(
-                    'Direccion  local ',
-                    style: FlutterFlowTheme.of(context).bodyText1,
-                  ),
-                ),
-                //Divider(),
-                Text(
-                  'Local',
-                  style: FlutterFlowTheme.of(context).bodyText1.override(
-                    fontFamily: 'Poppins',
-                    color: Color(0xFF9E9E9E),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
-                  child: FFButtonWidget(
-                    onPressed: () {
-                      print('Button pressed ...');
-                    },
-                    text: 'Cambiar',
-                    options: FFButtonOptions(
-                      width: 130,
-                      height: 30,
-                      color: Color(0xFF506F52),
-                      textStyle:
-                      FlutterFlowTheme.of(context).subtitle2.override(
-                        fontFamily: 'Poppins',
-                        color: Colors.white,
-                        fontWeight: FontWeight.w100,
-                      ),
-                      borderSide: BorderSide(
-                        color: Colors.transparent,
-                        width: 1,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                ),*/
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 0),
-                  child: Text(
-                    'Numero de telefono ',
-                    style: FlutterFlowTheme.of(context).bodyText1,
-                  ),
-                ),
-                //Divider(),
-                Text(
-                  'XXXXXXX',
-                    style: FlutterFlowTheme.of(context).bodyText1.override(
-                    fontFamily: 'Poppins',
-                    color: Color(0xFF9E9E9E),
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
-                  child: FFButtonWidget(
-                    onPressed: () {
-                      print('Button pressed ...');
-                    },
-                    text: 'Cambiar',
-                    options: FFButtonOptions(
-                      width: 130,
-                      height: 30,
-                      color: Color(0xFF506F52),
-                      textStyle:
-                      FlutterFlowTheme.of(context).subtitle2.override(
-                        fontFamily: 'Poppins',
-                        color: Colors.white,
-                        fontWeight: FontWeight.w100,
-                      ),
-                      borderSide: BorderSide(
-                        color: Colors.transparent,
-                        width: 1,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+              );
+            }
+          }
+      ), //AQUIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     );
   }
 }

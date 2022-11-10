@@ -12,7 +12,6 @@ import 'package:recomienda_flutter/home_page_widget.dart';
 import 'package:recomienda_flutter/model/booking_model.dart';
 import 'package:recomienda_flutter/model/funcion.dart';
 import 'package:recomienda_flutter/model/servicios.dart';
-import 'package:recomienda_flutter/model/usuarios.dart';
 import 'package:recomienda_flutter/screens/home_screen.dart';
 import 'package:recomienda_flutter/utils/authentication.dart';
 import 'package:recomienda_flutter/utils/utils.dart';
@@ -41,7 +40,6 @@ class _BookingScreen extends State<BookingScreen> {
   DateTime selectedDate = DateTime.now();
   String selectedTime = '';
   int selectedTimeSlot = -1;
-  Usuarios usuario = Usuarios(nombre: '', email: '');
 
   @override
   void initState(){
@@ -69,7 +67,6 @@ class _BookingScreen extends State<BookingScreen> {
               await Authentication.signOut(context: context);
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
-                  //builder: (context) => SignInScreen(),
                   builder: (context) => HomePageWidget2(),
                 ),
               );
@@ -173,7 +170,7 @@ class _BookingScreen extends State<BookingScreen> {
             )
           ],
         ),
-      ),
+        )
     );
   }
 
@@ -193,7 +190,11 @@ class _BookingScreen extends State<BookingScreen> {
                   itemCount: establecimientos.length,
                   itemBuilder: (context, index){
                     return GestureDetector(
-                      onTap: () => setState(() => selectedEstablecimiento = establecimientos[index]),
+                      //onTap: () => setState(() => selectedEstablecimiento = establecimientos[index]),
+                      onTap: () => {
+                        setState(() => selectedEstablecimiento = establecimientos[index]),
+                        setState(() => currentStep += 1)
+                      },
                       child: Card(
                         color: Color(0xFF7CBF97),
                         child: ListTile(
@@ -234,7 +235,11 @@ class _BookingScreen extends State<BookingScreen> {
                   itemCount: salones.length,
                   itemBuilder: (context, index){
                     return GestureDetector(
-                      onTap: () =>  setState(() => selectedSalon = salones[index]),
+                      onTap: () =>
+                      {
+                        setState(() => selectedSalon = salones[index]),
+                        setState(() => currentStep += 1)
+                      },
                       child: Card(
                         color: Color(0xFF7CBF97),
                         child: ListTile(
@@ -279,6 +284,7 @@ class _BookingScreen extends State<BookingScreen> {
                     return GestureDetector(
                       onTap: () =>  {
                         setState(() => selectedServicio = servicios[index]),
+                        setState(() => currentStep += 1),
                       },
                       child: Card(
                         color: Color(0xFF7CBF97),
@@ -333,6 +339,7 @@ class _BookingScreen extends State<BookingScreen> {
                     return GestureDetector(
                       onTap: () =>  {
                         setState(() => selectedFuncion = funciones[index]),
+                        setState(() => currentStep += 1)
                       },
                       child: Card(
                         color: Color(0xFF7CBF97),
@@ -432,6 +439,7 @@ class _BookingScreen extends State<BookingScreen> {
                               onTap: maxTimeSlot > index || listTimeSlot.contains(index) ? null : () {
                                 setState(() => selectedTime = hora.elementAt(index));
                                 setState(() => selectedTimeSlot = index);
+                                setState(() => currentStep += 1);
                               },
                               child: Card(
                                 shape: BeveledRectangleBorder(
@@ -525,7 +533,7 @@ class _BookingScreen extends State<BookingScreen> {
       batch.set(servicioBooking, bookingModel.toJson());
     }
 
-    //batch.set(servicioBooking, bookingModel.toJson());
+    batch.set(servicioBooking, bookingModel.toJson());
     batch.set(userBooking, bookingModel.toJson());
     batch.commit().then((value) {
       //Snackbar simple a pie de la app
@@ -594,7 +602,7 @@ class _BookingScreen extends State<BookingScreen> {
         SizedBox(height: MediaQuery.of(context).size.height / 30,),
         FutureBuilder(
           future: downloadURL(selectedEstablecimiento.name),
-          builder: (context, AsyncSnapshot<String >snapshot) {
+          builder: (context, AsyncSnapshot<String>snapshot) {
             if(snapshot.connectionState == ConnectionState.done && snapshot.hasData){
               return Container(
                   child: Image.network(

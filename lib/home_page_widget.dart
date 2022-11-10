@@ -1,24 +1,17 @@
 import 'package:recomienda_flutter/res/custom_colors.dart';
-import 'package:recomienda_flutter/screens/registro.dart';
 import 'package:recomienda_flutter/utils/authentication.dart';
 import 'package:recomienda_flutter/widgets/google_sign_in_button.dart';
 
 import '../flutter_flow/flutter_flow_icon_button.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
-import '../flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class HomePageWidget2 extends StatefulWidget {
-  const HomePageWidget2({Key? key}) : super(key: key);
+class HomePageWidget2 extends StatelessWidget{
+  HomePageWidget2({Key? key}) : super(key: key);
 
-  @override
-  _HomePageWidgetState createState() => _HomePageWidgetState();
-}
-
-class _HomePageWidgetState extends State<HomePageWidget2> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  late final TextEditingController usuario = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,7 +52,7 @@ class _HomePageWidgetState extends State<HomePageWidget2> {
                     width: 1,
                   ),
                 ),
-                child: Column(
+                /*child: Column(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -166,18 +159,13 @@ class _HomePageWidgetState extends State<HomePageWidget2> {
                         borderRadius: BorderRadius.circular(15),
                       ),
                     ),
-
                   ],
-                ),
+                ),*/
               ),
               FutureBuilder(
                 future: Authentication.initializeFirebase(context: context),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
-                    print('snapshot.error');
-                    print(snapshot.error);
-                    print('snapshot.connectionState');
-                    print(snapshot.connectionState);
                     return Text('Error initializing Firebase');
                   } else if (snapshot.connectionState == ConnectionState.done) {
                     return GoogleSignInButton();

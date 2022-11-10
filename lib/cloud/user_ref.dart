@@ -13,7 +13,7 @@ Future<Usuarios> getUserProfiles(String email) async {
     return user;
   }
   else{
-    return Usuarios(nombre: '', email: '');
+    return Usuarios(nombre: '', email: '', edad: '', telefono: '');
   }
 }
 
