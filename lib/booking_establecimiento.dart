@@ -13,23 +13,23 @@ import 'package:recomienda_flutter/model/booking_model.dart';
 import 'package:recomienda_flutter/model/funcion.dart';
 import 'package:recomienda_flutter/model/servicios.dart';
 import 'package:recomienda_flutter/screens/home_screen.dart';
-import 'package:recomienda_flutter/state/state_management.dart';
 import 'package:recomienda_flutter/utils/authentication.dart';
 import 'package:recomienda_flutter/utils/utils.dart';
 import 'package:recomienda_flutter/widgets/notification_widget.dart';
 import '../model/establecimientos.dart';
+import 'booking.dart';
 import 'model/salones.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
-class BookingScreen extends StatefulWidget{
-  const BookingScreen({Key? key}) : super(key: key);
+class BookingEstablecimientoScreen extends StatefulWidget{
+  const BookingEstablecimientoScreen({Key? key}) : super(key: key);
 
   @override
-  _BookingScreen createState() => new _BookingScreen();
+  _BookingEstablecimientoScreen createState() => new _BookingEstablecimientoScreen();
 
 }
 
-class _BookingScreen extends State<BookingScreen> {
+class _BookingEstablecimientoScreen extends State<BookingEstablecimientoScreen> {
   String emailUser = FirebaseAuth.instance.currentUser?.email as String;
   String nameUser = FirebaseAuth.instance.currentUser?.displayName as String;
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
@@ -52,125 +52,108 @@ class _BookingScreen extends State<BookingScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        key: scaffoldKey,
-        appBar: AppBar(
-          //toolbarHeight: 50,
-          toolbarHeight: (MediaQuery.of(context).size.height)/15,
-          backgroundColor: Colors.black45,
-          title: Text('Reservas'),
-          centerTitle: true,
-          leading: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              primary: Color(0xFF7CBF97),
-            ),
-            onPressed: () async {
-              await Authentication.signOut(context: context);
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (context) => HomePageWidget2(),
-                ),
-              );
-            },
-            child: Icon(Icons.logout, color: Colors.white),
-          ),
-          actions: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(right: 20.0),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.of(context).pushReplacement(
+        child: Scaffold(
+          key: scaffoldKey,
+            appBar: AppBar(
+                title: Text('Reservar'),
+                centerTitle: true,
+                backgroundColor: Colors.black45,
+                leading: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Color(0xFF7CBF97),
+                  ),
+                  onPressed: () async {
+                    await Authentication.signOut(context: context);
+                    Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
-                        builder: (context) => HomePageWidget(),
-                      )
-                  );
-                },
-                child: Icon(Icons.person),
-              ),
-            )
-          ],
-        ),
-        resizeToAvoidBottomInset: true,
-        backgroundColor: Colors.white,
-        body: Column(
-          children: [
-            SizedBox(height: MediaQuery.of(context).size.height / 150,),
-            NumberStepper(
-              stepRadius: 14,
-              activeStep: currentStep - 1,
-              direction: Axis.horizontal,
-              lineLength: (MediaQuery.of(context).size.width)/15,
-              scrollingDisabled: true,
-              enableNextPreviousButtons: false,
-              enableStepTapping: false,
-              numbers: [1, 2, 3, 4, 5, 6],
-              stepColor: Color(0xFF669478),
-              activeStepColor: Colors.grey,
-              numberStyle: TextStyle(color: Colors.white),
+                        builder: (context) => HomePageWidget2(),
+                      ),
+                    );
+                  },
+                  child: Icon(Icons.logout, color: Colors.white),
+                )
             ),
-            SizedBox(height: MediaQuery.of(context).size.height / 150,),
-            Expanded(
-              flex: 10,
-              child: currentStep == 1
-                  ? displayEstablecimientos()
-                  : currentStep == 2
-                  ? displaySalon(selectedEstablecimiento.name)
-                  : currentStep == 3
-                  ? displayServicios(selectedSalon)
-                  : currentStep == 4
-                  ? displayFunciones(selectedSalon)
-                  : currentStep == 5
-                  ? displayTimeSlot(context, selectedServicio, selectedFuncion)
-                  : currentStep == 6
-                  ? displayConfirm(context)
-                  : Container(),
-            ),
-            Expanded(
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                    padding: EdgeInsets.all(8),
-                    child:Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                primary: Color(0xFF7CBF97),
-                              ),
-                              onPressed: currentStep == 1 ? null : () => setState(() => currentStep -= 1),
-                              child: Text('Atras',),
-                            )
-                        ),
-                        SizedBox(width: 30,),
-                        Expanded(
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                primary: Color(0xFF7CBF97),
-                              ),
-                              onPressed: (currentStep == 1 &&
-                                  selectedEstablecimiento.name == '') ||
-                                  (currentStep == 2 &&
-                                      selectedSalon.docId == '') ||
-                                  (currentStep == 3 &&
-                                      selectedServicio.docId == '') ||
-                                  (currentStep == 4 &&
-                                      selectedFuncion.docId == '') ||
-                                  (currentStep == 5 &&
-                                      selectedTimeSlot == -1)
-                                  ? null
-                                  : currentStep == 6
-                                  ? null
-                                  : () => setState(() => currentStep += 1),
-                              child: Text('Siguiente'),
-                            )
-                        ),
-                      ],
-                    )),
+          resizeToAvoidBottomInset: true,
+          backgroundColor: Colors.white,
+          body: Column(
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.height / 150,),
+              NumberStepper(
+                stepRadius: 14,
+                activeStep: currentStep - 1,
+                direction: Axis.horizontal,
+                lineLength: (MediaQuery.of(context).size.width)/15,
+                scrollingDisabled: true,
+                enableNextPreviousButtons: false,
+                enableStepTapping: false,
+                numbers: [1, 2, 3, 4, 5, 6],
+                stepColor: Color(0xFF669478),
+                activeStepColor: Colors.grey,
+                numberStyle: TextStyle(color: Colors.white),
               ),
-            )
-          ],
-        ),
+              SizedBox(height: MediaQuery.of(context).size.height / 150,),
+              Expanded(
+                flex: 10,
+                child: currentStep == 1
+                    ? displayEstablecimientos()
+                    : currentStep == 2
+                    ? displaySalon(selectedEstablecimiento.name)
+                    : currentStep == 3
+                    ? displayServicios(selectedSalon)
+                    : currentStep == 4
+                    ? displayFunciones(selectedSalon)
+                    : currentStep == 5
+                    ? displayTimeSlot(context, selectedServicio, selectedFuncion)
+                    : currentStep == 6
+                    ? displayConfirm(context)
+                    : Container(),
+              ),
+              Expanded(
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                      padding: EdgeInsets.all(8),
+                      child:Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  primary: Color(0xFF7CBF97),
+                                ),
+                                onPressed: currentStep == 1 ? null : () => setState(() => currentStep -= 1),
+                                child: Text('Atras',),
+                              )
+                          ),
+                          SizedBox(width: 30,),
+                          Expanded(
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  primary: Color(0xFF7CBF97),
+                                ),
+                                onPressed: (currentStep == 1 &&
+                                    selectedEstablecimiento.name == '') ||
+                                    (currentStep == 2 &&
+                                        selectedSalon.docId == '') ||
+                                    (currentStep == 3 &&
+                                        selectedServicio.docId == '') ||
+                                    (currentStep == 4 &&
+                                        selectedFuncion.docId == '') ||
+                                    (currentStep == 5 &&
+                                        selectedTimeSlot == -1)
+                                    ? null
+                                    : currentStep == 6
+                                    ? null
+                                    : () => setState(() => currentStep += 1),
+                                child: Text('Siguiente'),
+                              )
+                          ),
+                        ],
+                      )),
+                ),
+              )
+            ],
+          ),
         )
     );
   }
@@ -345,18 +328,18 @@ class _BookingScreen extends State<BookingScreen> {
                       child: Card(
                         color: Color(0xFF7CBF97),
                         child: ListTile(
-                          leading: Icon(
-                            Icons.cut,
-                            color: Colors.black,
-                          ),
-                          trailing: selectedFuncion.docId ==
-                              funciones[index].docId
-                              ? Icon(Icons.check)
-                              : null,
-                          title: Text(
-                            //'${funciones[index].name} (${funciones[index].slot})',
-                            '${funciones[index].name} (${15 * funciones[index].slot} min)',
-                          )
+                            leading: Icon(
+                              Icons.cut,
+                              color: Colors.black,
+                            ),
+                            trailing: selectedFuncion.docId ==
+                                funciones[index].docId
+                                ? Icon(Icons.check)
+                                : null,
+                            title: Text(
+                              //'${funciones[index].name} (${funciones[index].slot})',
+                              '${funciones[index].name} (${15 * funciones[index].slot} min)',
+                            )
                         ),
                       ),
                     );
@@ -449,10 +432,10 @@ class _BookingScreen extends State<BookingScreen> {
                                 color: listTimeSlot.contains(index)
                                     ? Color(0xFFBE4A4A)
                                     : maxTimeSlot > index
-                                      ? Color(0xFFEE5E5E)
-                                      : selectedTime == hora.elementAt(index)
-                                        ? Colors.white12
-                                        : Color(0xFF555555),
+                                    ? Color(0xFFEE5E5E)
+                                    : selectedTime == hora.elementAt(index)
+                                    ? Colors.white12
+                                    : Color(0xFF555555),
                                 child: GridTile(
                                   child: Center(
                                     child: Column(
@@ -483,12 +466,12 @@ class _BookingScreen extends State<BookingScreen> {
 
   confirmBooking(BuildContext context) {
     var hour = selectedTime.length <= 10 ?
-      int.parse(selectedTime.split(':')[0].substring(0,1)) :
-      int.parse(selectedTime.split(':')[0].substring(0,2));
+    int.parse(selectedTime.split(':')[0].substring(0,1)) :
+    int.parse(selectedTime.split(':')[0].substring(0,2));
 
     var minutes = selectedTime.length <= 10 ?
-      int.parse(selectedTime.split(':')[1].substring(0,1)) : //hora
-      int.parse(selectedTime.split(':')[1].substring(0,2)); //min
+    int.parse(selectedTime.split(':')[1].substring(0,1)) : //hora
+    int.parse(selectedTime.split(':')[1].substring(0,2)); //min
 
     var timeStamp = DateTime(
         selectedDate.year,
@@ -563,33 +546,33 @@ class _BookingScreen extends State<BookingScreen> {
       setState(() => selectedTimeSlot = -1);
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (context) => BookingScreen(),
+            builder: (context) => BookingEstablecimientoScreen(),
           )
       );
     });
 
     //Create event
     final event = Event(
-        title: 'Reserva Peluqueria',
-        description: 'Reserva peluqueria ${selectedTime} - '
-            '${DateFormat('dd/MM/yyyy').format(selectedDate)}',
-        location: '${selectedSalon.address}',
-        startDate: DateTime(
-            selectedDate.year,
-            selectedDate.month,
-            selectedDate.day,
-            hour,
-            minutes
-        ),
-        endDate: DateTime(
-            selectedDate.year,
-            selectedDate.month,
-            selectedDate.day,
-            hour,
-            minutes + 30
-        ),
-        iosParams: IOSParams(reminder: Duration(minutes: 30)),
-        androidParams: AndroidParams(emailInvites: [], ),
+      title: 'Reserva Peluqueria',
+      description: 'Reserva peluqueria ${selectedTime} - '
+          '${DateFormat('dd/MM/yyyy').format(selectedDate)}',
+      location: '${selectedSalon.address}',
+      startDate: DateTime(
+          selectedDate.year,
+          selectedDate.month,
+          selectedDate.day,
+          hour,
+          minutes
+      ),
+      endDate: DateTime(
+          selectedDate.year,
+          selectedDate.month,
+          selectedDate.day,
+          hour,
+          minutes + 30
+      ),
+      iosParams: IOSParams(reminder: Duration(minutes: 30)),
+      androidParams: AndroidParams(emailInvites: [], ),
 
     );
     Add2Calendar.addEvent2Cal(event);
@@ -607,9 +590,9 @@ class _BookingScreen extends State<BookingScreen> {
             if(snapshot.connectionState == ConnectionState.done && snapshot.hasData){
               return Container(
                   child: Image.network(
-                    snapshot.data!,
-                    width: MediaQuery.of(context).size.width/2,
-                    height: MediaQuery.of(context).size.height/5
+                      snapshot.data!,
+                      width: MediaQuery.of(context).size.width/2,
+                      height: MediaQuery.of(context).size.height/5
                   )
               );
             }
@@ -623,7 +606,7 @@ class _BookingScreen extends State<BookingScreen> {
           width: MediaQuery.of(context).size.width,
           child: Card(child: Padding(padding: EdgeInsets.all(16), child:
           Column(
-          //ListView(
+            //ListView(
             children: [
               Text('Gracias por confiar en nuestros servicios'.toUpperCase()),
               Text('Informacion de la reserva'.toUpperCase()),

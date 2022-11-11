@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BookingModel {
   late String docId, servicioId, servicioName, establecimiento, customerName,
-      customerEmail, salonAddress, salonId, salonName, time;
+      customerEmail, salonAddress, salonId, salonName, time, customerPhone;
   late bool done;
   late int slot, timeStamp, duration;
 

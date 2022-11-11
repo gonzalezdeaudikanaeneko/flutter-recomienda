@@ -13,5 +13,7 @@ final currentStep = StateProvider((ref) => 1);
 //final selectedEstablecimiento = StateProvider((ref) => Establecimientos());
 //final selectedSalon = StateProvider((ref) => Salon());
 //final selectedService = StateProvider((ref) => Salon());
+final selectedDate = StateProvider((ref) => DateTime.now);
+final currentstep = StateProvider((ref) => 1);
 
 

@@ -1,8 +1,12 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:recomienda_flutter/booking_establecimiento.dart';
 
 import '../home_page_widget.dart';
+import '../utils/authentication.dart';
+import 'book_list.dart';
+import 'book_list_ainhoa.dart';
 
 class InicioEstablecimiento extends StatelessWidget {
   const InicioEstablecimiento({Key? key}) : super(key: key);
@@ -12,7 +16,22 @@ class InicioEstablecimiento extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
             title: Text('RECOMIENDA'),
-            centerTitle: true
+            centerTitle: true,
+            backgroundColor: Colors.black45,
+            leading: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Color(0xFF7CBF97),
+              ),
+              onPressed: () async {
+                await Authentication.signOut(context: context);
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => HomePageWidget2(),
+                  ),
+                );
+              },
+              child: Icon(Icons.logout, color: Colors.white),
+            )
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -20,7 +39,7 @@ class InicioEstablecimiento extends StatelessWidget {
           children: [
             Container(
                 padding: EdgeInsets.all(16),
-                height: MediaQuery.of(context).size.height/3,
+                height: MediaQuery.of(context).size.height/4,
                 child: ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF7CBF97)),
@@ -28,7 +47,7 @@ class InicioEstablecimiento extends StatelessWidget {
                     onPressed: () {
                       Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
-                            builder: (context) => HomePageWidget2(),
+                            builder: (context) => BookingEstablecimientoScreen(),
                           )
                       );
                     },
@@ -41,7 +60,7 @@ class InicioEstablecimiento extends StatelessWidget {
             ),
             Container(
                 padding: EdgeInsets.all(16),
-                height: MediaQuery.of(context).size.height/3,
+                height: MediaQuery.of(context).size.height/4,
                 child: ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF7CBF97)),
@@ -49,17 +68,38 @@ class InicioEstablecimiento extends StatelessWidget {
                     onPressed: () {
                       Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
-                            builder: (context) => HomePageWidget2(),
+                            builder: (context) => BookList(),
                           )
                       );
                     },
-                    child: Text('LISTADO RESERVAS', style: TextStyle(
+                    child: Text('RESERVAS REDA', style: TextStyle(
                         fontSize: 25,
                         fontWeight: FontWeight.bold
                     ),
                     )
                 )
-            )
+            ),
+            Container(
+                padding: EdgeInsets.all(16),
+                height: MediaQuery.of(context).size.height/4,
+                child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF7CBF97)),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => BookListAinhoa(),
+                          )
+                      );
+                    },
+                    child: Text('RESERVAS AINHOA', style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold
+                    ),
+                    )
+                )
+            ),
           ],
         ));
   }

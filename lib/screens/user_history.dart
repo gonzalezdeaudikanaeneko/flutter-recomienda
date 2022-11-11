@@ -174,7 +174,6 @@ class UserHistory extends ConsumerWidget{
               );
             }
           }
-
         }
     );
   }
@@ -182,9 +181,15 @@ class UserHistory extends ConsumerWidget{
   void cancelBooking(BuildContext context, BookingModel bookingModel) {
     var batch = FirebaseFirestore.instance.batch();
     ///establecimientos/reda/Branch/RUU7mpPeTbrhIy2LXtDe/barber/1ShJfG667NcT0V8A5Xfy/13_07_22/4
+    print('cancelacion');
+    print(bookingModel.establecimiento);
+    print(bookingModel.salonId);
+    print(bookingModel.servicioId);
+    print(DateFormat('dd_MM_yy').format(DateTime.fromMillisecondsSinceEpoch(bookingModel.timeStamp)));
+    print(bookingModel.slot.toString());
     var barberBooking = FirebaseFirestore.instance
       .collection('establecimientos')
-      .doc(bookingModel.establecimiento)
+      .doc(bookingModel.servicioName)
       .collection('Branch')
       .doc(bookingModel.salonId)
       .collection('barber')
