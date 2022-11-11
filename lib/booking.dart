@@ -22,6 +22,8 @@ import '../model/establecimientos.dart';
 import 'model/salones.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
+import 'model/usuarios.dart';
+
 class BookingScreen extends StatefulWidget{
   const BookingScreen({Key? key}) : super(key: key);
 
@@ -66,7 +68,7 @@ class _BookingScreen extends State<BookingScreen> {
               primary: Color(0xFF7CBF97),
             ),
             onPressed: () async {
-              await Authentication.signOut(context: context);
+              //await Authentication.signOut(context: context);
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
                   builder: (context) => Inicio(),
@@ -482,7 +484,127 @@ class _BookingScreen extends State<BookingScreen> {
     );
   }
 
-  confirmBooking(BuildContext context) {
+  confirmBooking(BuildContext context) async {
+
+    String email = FirebaseAuth.instance.currentUser?.email as String;
+    var userRef = FirebaseFirestore.instance.collection('usuarios').doc(email);
+    var snapshot = await userRef.get();
+    var user = Usuarios.fromJson(snapshot.data()!);
+
+    var hour = selectedTime.length <= 10 ?
+    int.parse(selectedTime.split(':')[0].substring(0,1)) :
+    int.parse(selectedTime.split(':')[0].substring(0,2));
+
+    var minutes = selectedTime.length <= 10 ?
+    int.parse(selectedTime.split(':')[1].substring(0,1)) : //hora
+    int.parse(selectedTime.split(':')[1].substring(0,2)); //min
+
+    var timeStamp = DateTime(
+        selectedDate.year,
+        selectedDate.month,
+        selectedDate.day,
+        hour,
+        minutes
+    ).millisecondsSinceEpoch;
+
+    var bookingModel = BookingModel(
+      servicioId: selectedServicio.docId,
+      servicioName: selectedServicio.name,
+      establecimiento: selectedEstablecimiento.address,
+      customerName: user.telefono,
+      customerEmail: user.nombre,
+      done: false,
+      salonAddress: selectedFuncion.name,
+      salonId: selectedSalon.docId,
+      salonName: user.edad,
+      slot: selectedTimeSlot,
+      timeStamp: timeStamp,
+      time: '${selectedTime.substring(0,5)} - ${DateFormat('dd/MM/yyyy').format(selectedDate)}',
+      duration: selectedFuncion.slot * 15,
+    );
+
+    var batch = FirebaseFirestore.instance.batch();
+
+    DocumentReference servicioBooking =
+    selectedServicio.reference.collection(
+        '${DateFormat('dd_MM_yy').format(selectedDate)}'
+    ).doc((selectedTimeSlot).toString());
+
+    DocumentReference userBooking = FirebaseFirestore.instance.collection('usuarios')
+        .doc(emailUser)
+        .collection('Booking_${FirebaseAuth.instance.currentUser?.uid}')
+        .doc();
+
+    for(var i = 0; i < selectedFuncion.slot; i++){
+      DocumentReference servicioBooking =
+      selectedServicio.reference.collection(
+          '${DateFormat('dd_MM_yy').format(selectedDate)}'
+      ).doc((selectedTimeSlot + i).toString());
+      batch.set(servicioBooking, bookingModel.toJson());
+    }
+
+    batch.set(servicioBooking, bookingModel.toJson());
+    batch.set(userBooking, bookingModel.toJson());
+    batch.commit().then((value) {
+      //Snackbar simple a pie de la app
+      /*ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Booking Correcto !!!'), behavior: SnackBarBehavior.floating, duration: Duration(seconds: 5),)
+      );*/
+
+      //Notificacion
+      NotificationWidget.showNotification(
+        title:  'Reserva en ${selectedEstablecimiento.address}',
+        body: 'Hora: ${selectedTime.substring(0,5)}',
+      );
+
+      NotificationWidget.showScheduledNotification(
+          1,
+          'Recordatorio',
+          'Reserva en ${selectedEstablecimiento.address} (${selectedTime.substring(0,5)})'
+      );
+
+      setState(() => selectedDate = DateTime.now());
+      setState(() => selectedServicio = Servicios(userName: '', name: '', docId: ''));
+      setState(() => selectedEstablecimiento = Establecimientos(name: '', address: '', imagen: ''));
+      setState(() => selectedSalon = Salon(name: '', address: '', horario: '', docId: ''));
+      setState(() => currentStep = 1);
+      setState(() => selectedTime = '');
+      setState(() => selectedTimeSlot = -1);
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => BookingScreen(),
+          )
+      );
+    });
+
+    //Create event
+    final event = Event(
+      title: 'Reserva Peluqueria',
+      description: 'Reserva peluqueria ${selectedTime} - '
+          '${DateFormat('dd/MM/yyyy').format(selectedDate)}',
+      location: '${selectedSalon.address}',
+      startDate: DateTime(
+          selectedDate.year,
+          selectedDate.month,
+          selectedDate.day,
+          hour,
+          minutes
+      ),
+      endDate: DateTime(
+          selectedDate.year,
+          selectedDate.month,
+          selectedDate.day,
+          hour,
+          minutes + 30
+      ),
+      iosParams: IOSParams(reminder: Duration(minutes: 30)),
+      androidParams: AndroidParams(emailInvites: [], ),
+
+    );
+    Add2Calendar.addEvent2Cal(event);
+  }
+
+  /*confirmBooking(BuildContext context) {
     var hour = selectedTime.length <= 10 ?
       int.parse(selectedTime.split(':')[0].substring(0,1)) :
       int.parse(selectedTime.split(':')[0].substring(0,2));
@@ -594,7 +716,7 @@ class _BookingScreen extends State<BookingScreen> {
 
     );
     Add2Calendar.addEvent2Cal(event);
-  }
+  }*/
 
   displayConfirm(BuildContext context){
     return Column(

@@ -64,7 +64,7 @@ class _BookList extends State<BookList> {
                           ),
                         )
                     ),
-                    GestureDetector(
+                    /*GestureDetector(
                       onTap: () {
                         DatePicker.showDatePicker(context,
                             showTitleActions: true,
@@ -78,7 +78,7 @@ class _BookList extends State<BookList> {
                           child: Icon(Icons.calendar_today, color: Colors.white,),
                         ),
                       ),
-                    )
+                    )*/
                   ],
                 ),
               ),
@@ -103,9 +103,9 @@ class _BookList extends State<BookList> {
                                 return ListView.builder(
                                     itemCount: userBooking.length,
                                     itemBuilder: (context, index) {
-                                      var isExpired = DateTime.fromMillisecondsSinceEpoch(
+                                      /*var isExpired = DateTime.fromMillisecondsSinceEpoch(
                                           userBooking[index].timeStamp)
-                                          .isBefore(syncTime);
+                                          .isBefore(syncTime);*/
                                       return Card(
                                         elevation: 8,
                                         shape: RoundedRectangleBorder(
@@ -147,8 +147,8 @@ class _BookList extends State<BookList> {
                                                       Row(
                                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                         children: [
-                                                          Text('${userBooking[index].salonName}'),
-                                                          Text('${userBooking[index].servicioName}'),
+                                                          Text('${userBooking[index].customerEmail} (${userBooking[index].salonName})'),
+                                                          Text('${userBooking[index].customerName}'),
                                                         ],
                                                       ),
                                                       Text('${userBooking[index].salonAddress}')
@@ -157,7 +157,7 @@ class _BookList extends State<BookList> {
                                                 ],
                                               ),
                                             ),
-                                            GestureDetector(
+                                            /*GestureDetector(
                                               onTap: isExpired ? null : () {
                                                 Alert(
                                                     context: context,
@@ -200,7 +200,7 @@ class _BookList extends State<BookList> {
                                                     )
                                                   ],
                                                 ),
-                                              ),)
+                                              ),)*/
                                           ],
                                         ),
                                       );

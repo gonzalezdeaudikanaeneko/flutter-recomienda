@@ -111,8 +111,7 @@ class UserHistory extends ConsumerWidget{
                                             Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
-                                                Text('${userBooking[index].salonName}'),
-                                                Text('${userBooking[index].servicioName}'),
+                                                Text('${userBooking[index].establecimiento}')
                                               ],
                                             ),
                                             Text('${userBooking[index].salonAddress}')

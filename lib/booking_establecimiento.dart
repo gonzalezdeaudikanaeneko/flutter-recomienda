@@ -22,6 +22,8 @@ import 'booking.dart';
 import 'model/salones.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
+import 'model/usuarios.dart';
+
 class BookingEstablecimientoScreen extends StatefulWidget{
   const BookingEstablecimientoScreen({Key? key}) : super(key: key);
 
@@ -64,7 +66,7 @@ class _BookingEstablecimientoScreen extends State<BookingEstablecimientoScreen> 
                     primary: Color(0xFF7CBF97),
                   ),
                   onPressed: () async {
-                    await Authentication.signOut(context: context);
+                    //await Authentication.signOut(context: context);
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
                         builder: (context) => InicioEstablecimiento(),
@@ -465,7 +467,13 @@ class _BookingEstablecimientoScreen extends State<BookingEstablecimientoScreen> 
     );
   }
 
-  confirmBooking(BuildContext context) {
+  confirmBooking(BuildContext context) async {
+
+    String email = FirebaseAuth.instance.currentUser?.email as String;
+    var userRef = FirebaseFirestore.instance.collection('usuarios').doc(email);
+    var snapshot = await userRef.get();
+    var user = Usuarios.fromJson(snapshot.data()!);
+
     var hour = selectedTime.length <= 10 ?
     int.parse(selectedTime.split(':')[0].substring(0,1)) :
     int.parse(selectedTime.split(':')[0].substring(0,2));
@@ -486,12 +494,12 @@ class _BookingEstablecimientoScreen extends State<BookingEstablecimientoScreen> 
       servicioId: selectedServicio.docId,
       servicioName: selectedServicio.name,
       establecimiento: selectedEstablecimiento.address,
-      customerName: nameUser,
-      customerEmail: emailUser,
+      customerName: user.telefono,
+      customerEmail: user.nombre,
       done: false,
-      salonAddress: selectedSalon.address,
+      salonAddress: selectedFuncion.name,
       salonId: selectedSalon.docId,
-      salonName: selectedSalon.name,
+      salonName: user.edad,
       slot: selectedTimeSlot,
       timeStamp: timeStamp,
       time: '${selectedTime.substring(0,5)} - ${DateFormat('dd/MM/yyyy').format(selectedDate)}',
@@ -547,7 +555,7 @@ class _BookingEstablecimientoScreen extends State<BookingEstablecimientoScreen> 
       setState(() => selectedTimeSlot = -1);
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (context) => BookingEstablecimientoScreen(),
+            builder: (context) => BookingScreen(),
           )
       );
     });
