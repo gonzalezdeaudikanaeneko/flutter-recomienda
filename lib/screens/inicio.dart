@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../home_page_widget.dart';
+import '../utils/authentication.dart';
 
 class Inicio extends StatelessWidget {
   const Inicio({Key? key}) : super(key: key);
@@ -11,7 +12,24 @@ class Inicio extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      appBar: AppBar(title: Text('RECOMIENDA'), centerTitle: true),
+      appBar: AppBar(
+          title: Text('RECOMIENDA'),
+          centerTitle: true,
+          leading: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: Color(0xFF7CBF97),
+            ),
+            onPressed: () async {
+              await Authentication.signOut(context: context);
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => HomePageWidget2(),
+                ),
+              );
+            },
+            child: Icon(Icons.logout, color: Colors.white),
+          )
+      ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.stretch,

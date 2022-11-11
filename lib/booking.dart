@@ -13,6 +13,7 @@ import 'package:recomienda_flutter/model/booking_model.dart';
 import 'package:recomienda_flutter/model/funcion.dart';
 import 'package:recomienda_flutter/model/servicios.dart';
 import 'package:recomienda_flutter/screens/home_screen.dart';
+import 'package:recomienda_flutter/screens/inicio.dart';
 import 'package:recomienda_flutter/state/state_management.dart';
 import 'package:recomienda_flutter/utils/authentication.dart';
 import 'package:recomienda_flutter/utils/utils.dart';
@@ -68,11 +69,11 @@ class _BookingScreen extends State<BookingScreen> {
               await Authentication.signOut(context: context);
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
-                  builder: (context) => HomePageWidget2(),
+                  builder: (context) => Inicio(),
                 ),
               );
             },
-            child: Icon(Icons.logout, color: Colors.white),
+            child: Icon(Icons.arrow_back, color: Colors.white),
           ),
           actions: <Widget>[
             Padding(
