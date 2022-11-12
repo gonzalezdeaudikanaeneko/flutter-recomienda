@@ -15,8 +15,9 @@ class MyApp extends StatefulWidget {
   @override
   State<MyApp> createState() => _MyAppState();
 
-  static _MyAppState of(BuildContext context) =>
-      context.findAncestorStateOfType<_MyAppState>()!;
+  /*static _MyAppState of(BuildContext context) =>
+      context.findAncestorStateOfType<_MyAppState>()!;*/
+
 }
 
 class _MyAppState extends State<MyApp> {
@@ -28,6 +29,7 @@ class _MyAppState extends State<MyApp> {
     _themeMode = mode;
     FlutterFlowTheme.saveThemeMode(mode);
   });
+
 
   @override
   Widget build(BuildContext context) {

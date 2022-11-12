@@ -8,17 +8,13 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:im_stepper/stepper.dart';
 import 'package:intl/intl.dart';
 import 'package:recomienda_flutter/cloud/todos_establecimientos.dart';
-import 'package:recomienda_flutter/home_page_widget.dart';
 import 'package:recomienda_flutter/model/booking_model.dart';
 import 'package:recomienda_flutter/model/funcion.dart';
 import 'package:recomienda_flutter/model/servicios.dart';
 import 'package:recomienda_flutter/screens/InicioEstablecimiento.dart';
-import 'package:recomienda_flutter/screens/home_screen.dart';
-import 'package:recomienda_flutter/utils/authentication.dart';
 import 'package:recomienda_flutter/utils/utils.dart';
 import 'package:recomienda_flutter/widgets/notification_widget.dart';
 import '../model/establecimientos.dart';
-import 'booking.dart';
 import 'model/salones.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
@@ -33,6 +29,8 @@ class BookingEstablecimientoScreen extends StatefulWidget{
 }
 
 class _BookingEstablecimientoScreen extends State<BookingEstablecimientoScreen> {
+
+  //Salon reda = Salon(name: 'reda', address: 'Cortes de Pelo y Arreglos de barba', horario: '10:00-10:15,10:15-10:30,10:30-10:45,10:45-11:00,11:00-11:15,11:15-11:30,11:30-11:45,11:45-12:00,12:00-12:15,12:15-12:30,12:30-12:45,12:45-13:00,13:00-13:15,13:15-13:30,16:00-16:15,16:15-16:30,16:30-16:45,16:45-17:00,17:00-17:15,17:15-17:30,17:30-17:45,17:45-18:00,18:00-18:15,18:15-18:30,18:30-18:45,18:45-19:00,19:00-19:15,19:15-19:30', docId: '1ShJfG667NcT0V8A5Xfy');
   String emailUser = FirebaseAuth.instance.currentUser?.email as String;
   String nameUser = FirebaseAuth.instance.currentUser?.displayName as String;
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
@@ -66,7 +64,6 @@ class _BookingEstablecimientoScreen extends State<BookingEstablecimientoScreen> 
                     primary: Color(0xFF7CBF97),
                   ),
                   onPressed: () async {
-                    //await Authentication.signOut(context: context);
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
                         builder: (context) => InicioEstablecimiento(),
@@ -89,7 +86,7 @@ class _BookingEstablecimientoScreen extends State<BookingEstablecimientoScreen> 
                 scrollingDisabled: true,
                 enableNextPreviousButtons: false,
                 enableStepTapping: false,
-                numbers: [1, 2, 3, 4, 5, 6],
+                numbers: [1, 2, 3],
                 stepColor: Color(0xFF669478),
                 activeStepColor: Colors.grey,
                 numberStyle: TextStyle(color: Colors.white),
@@ -98,16 +95,10 @@ class _BookingEstablecimientoScreen extends State<BookingEstablecimientoScreen> 
               Expanded(
                 flex: 10,
                 child: currentStep == 1
-                    ? displayEstablecimientos()
+                    ? displayFunciones()
                     : currentStep == 2
-                    ? displaySalon(selectedEstablecimiento.name)
+                    ? displayTimeSlot(context, selectedFuncion)
                     : currentStep == 3
-                    ? displayServicios(selectedSalon)
-                    : currentStep == 4
-                    ? displayFunciones(selectedSalon)
-                    : currentStep == 5
-                    ? displayTimeSlot(context, selectedServicio, selectedFuncion)
-                    : currentStep == 6
                     ? displayConfirm(context)
                     : Container(),
               ),
@@ -161,201 +152,62 @@ class _BookingEstablecimientoScreen extends State<BookingEstablecimientoScreen> 
     );
   }
 
-  displayEstablecimientos() {
-    String email = FirebaseAuth.instance.currentUser?.email as String;
+  displayFunciones() {
     return FutureBuilder(
-        future: getEstablecimientos(),
-        builder: (context, AsyncSnapshot<List<Establecimientos>> snapshot){
+        future: getReda('RUU7mpPeTbrhIy2LXtDe'),//ID reda
+        builder: (context, AsyncSnapshot<Salon> snapshot){
           if(snapshot.connectionState == ConnectionState.waiting)
-            return Center(child: CircularProgressIndicator(),);
+            return Center(child: CircularProgressIndicator());
           else{
-            var establecimientos = snapshot.data as List<Establecimientos>;
-            if(snapshot.data == null || snapshot.data?.length == 0)
-              return Center(child: Text('No se cargan los establecimientos'),);
-            else
-              return ListView.builder(
-                  itemCount: establecimientos.length,
-                  itemBuilder: (context, index){
-                    return GestureDetector(
-                      //onTap: () => setState(() => selectedEstablecimiento = establecimientos[index]),
-                      onTap: () => {
-                        setState(() => selectedEstablecimiento = establecimientos[index]),
-                        setState(() => currentStep += 1)
-                      },
-                      child: Card(
-                        color: Color(0xFF7CBF97),
-                        child: ListTile(
-                          leading: Icon(
-                            Icons.home_work,
-                            color: Color(0xFF111111),
-                          ),
-                          trailing: selectedEstablecimiento.name ==
-                              establecimientos[index].name
-                              ? Icon(Icons.check)
-                              : null,
-                          title: Text(
-                            '${establecimientos[index].address}',
-                            //style: GoogleFonts.robotoMono(),
-                          ),
-                        ),
-                      ),
-                    );
+            Salon reda = snapshot.data as Salon;
+            return FutureBuilder(
+                future: getFunciones(reda),
+                builder: (context, AsyncSnapshot<List<Funcion>> snapshot){
+                  if(snapshot.connectionState == ConnectionState.waiting)
+                    return Center(child: CircularProgressIndicator(),);
+                  else{
+                    var funciones = snapshot.data as List<Funcion>;
+                    if(funciones == null || funciones.length == 0) {
+                      return Center(child: CircularProgressIndicator(),);
+                    } else
+                      return ListView.builder(
+                          itemCount: funciones.length,
+                          itemBuilder: (context, index){
+                            return GestureDetector(
+                              onTap: () =>  {
+                                setState(() => selectedFuncion = funciones[index]),
+                                setState(() => currentStep += 1)
+                              },
+                              child: Card(
+                                color: Color(0xFF7CBF97),
+                                child: ListTile(
+                                    leading: Icon(
+                                      Icons.cut,
+                                      color: Colors.black,
+                                    ),
+                                    trailing: selectedFuncion.docId ==
+                                        funciones[index].docId
+                                        ? Icon(Icons.check)
+                                        : null,
+                                    title: Text(
+                                      //'${funciones[index].name} (${funciones[index].slot})',
+                                      '${funciones[index].name} (${15 * funciones[index].slot} min)',
+                                    )
+                                ),
+                              ),
+                            );
+                          }
+                      );
                   }
-              );
+                }
+            );
           }
         }
     );
   }
 
-  displaySalon(String establecimiento) {
-    return FutureBuilder(
-        future: getSalones(establecimiento),
-        builder: (context, AsyncSnapshot<List<Salon>> snapshot){
-          if(snapshot.connectionState == ConnectionState.waiting)
-            return Center(child: CircularProgressIndicator(),);
-          else{
-            var salones = snapshot.data as List<Salon>;
-            if(salones == null || salones.length == 0) {
-              return Center(child: CircularProgressIndicator(),);
-            } else
-              return ListView.builder(
-                  itemCount: salones.length,
-                  itemBuilder: (context, index){
-                    return GestureDetector(
-                      onTap: () =>
-                      {
-                        setState(() => selectedSalon = salones[index]),
-                        setState(() => currentStep += 1)
-                      },
-                      child: Card(
-                        color: Color(0xFF7CBF97),
-                        child: ListTile(
-                          leading: Icon(
-                            Icons.home_outlined,
-                            color: Colors.black,
-                          ),
-                          trailing: selectedSalon.docId ==
-                              salones[index].docId
-                              ? Icon(Icons.check)
-                              : null,
-                          title: Text(
-                            '${salones[index].name}',
-                          ),
-                          subtitle: Text(
-                            '${salones[index].address}',
-                          ),
-                        ),
-                      ),
-                    );
-                  }
-              );
-          }
-        }
-    );
-  }
-
-  displayServicios(Salon ser) {
-    return FutureBuilder(
-        future: getServicios(ser),
-        builder: (context, AsyncSnapshot<List<Servicios>> snapshot){
-          if(snapshot.connectionState == ConnectionState.waiting)
-            return Center(child: CircularProgressIndicator(),);
-          else{
-            var servicios = snapshot.data as List<Servicios>;
-            if(servicios == null || servicios.length == 0) {
-              return Center(child: CircularProgressIndicator(),);
-            } else
-              return ListView.builder(
-                  itemCount: servicios.length,
-                  itemBuilder: (context, index){
-                    return GestureDetector(
-                      onTap: () =>  {
-                        setState(() => selectedServicio = servicios[index]),
-                        setState(() => currentStep += 1),
-                      },
-                      child: Card(
-                        color: Color(0xFF7CBF97),
-                        child: ListTile(
-                          leading: Icon(
-                            Icons.person,
-                            color: Colors.black,
-                          ),
-                          trailing: selectedServicio.docId ==
-                              servicios[index].docId
-                              ? Icon(Icons.check)
-                              : null,
-                          title: Text(
-                            '${servicios[index].name}',
-                          ),
-                          /*subtitle: RatingBar.builder(
-                            updateOnDrag: false,
-                            itemSize: 16,
-                            allowHalfRating: true,
-                            ignoreGestures: true,
-                            initialRating: servicios[index].rating,
-                            direction: Axis.horizontal,
-                            itemCount: 5,
-                            itemBuilder: (context,_) => Icon(Icons.star, color: Colors.amber,),
-                            itemPadding: const EdgeInsets.all(4),
-                            onRatingUpdate: (double value) {  },
-                          ),*/
-                        ),
-                      ),
-                    );
-                  }
-              );
-          }
-        }
-    );
-  }
-
-  displayFunciones(Salon ser) {
-    return FutureBuilder(
-        future: getFunciones(ser),
-        builder: (context, AsyncSnapshot<List<Funcion>> snapshot){
-          if(snapshot.connectionState == ConnectionState.waiting)
-            return Center(child: CircularProgressIndicator(),);
-          else{
-            var funciones = snapshot.data as List<Funcion>;
-            if(funciones == null || funciones.length == 0) {
-              return Center(child: CircularProgressIndicator(),);
-            } else
-              return ListView.builder(
-                  itemCount: funciones.length,
-                  itemBuilder: (context, index){
-                    return GestureDetector(
-                      onTap: () =>  {
-                        setState(() => selectedFuncion = funciones[index]),
-                        setState(() => currentStep += 1)
-                      },
-                      child: Card(
-                        color: Color(0xFF7CBF97),
-                        child: ListTile(
-                            leading: Icon(
-                              Icons.cut,
-                              color: Colors.black,
-                            ),
-                            trailing: selectedFuncion.docId ==
-                                funciones[index].docId
-                                ? Icon(Icons.check)
-                                : null,
-                            title: Text(
-                              //'${funciones[index].name} (${funciones[index].slot})',
-                              '${funciones[index].name} (${15 * funciones[index].slot} min)',
-                            )
-                        ),
-                      ),
-                    );
-                  }
-              );
-          }
-        }
-    );
-  }
-
-  displayTimeSlot(BuildContext context, Servicios ser, Funcion fun) {
+  displayTimeSlot(BuildContext context, Funcion fun) {
     var now = selectedDate;
-    var hora = selectedSalon.horario.split(',');
     return Column(
       children: [
         Container(
@@ -400,69 +252,89 @@ class _BookingEstablecimientoScreen extends State<BookingEstablecimientoScreen> 
         SizedBox(height: MediaQuery.of(context).size.height / 150,),
         Expanded(
           child: FutureBuilder(
-              future: getMaxAvailableTimeSlot(selectedDate),
-              builder: (context, snapshot) {
+              future: getReda('RUU7mpPeTbrhIy2LXtDe'),//ID reda
+              builder: (context, AsyncSnapshot<Salon> snapshot){
                 if(snapshot.connectionState == ConnectionState.waiting)
-                  return Center(child: CircularProgressIndicator(),);
-                else
-                {
-                  var maxTimeSlot = snapshot.data as int;
+                  return Center(child: CircularProgressIndicator());
+                else{
+                  Salon x = snapshot.data as Salon;
                   return FutureBuilder(
-                    future: getTimeSlotOfServicios(ser, DateFormat('dd_MM_yy').format(selectedDate), fun),
-                    builder: (context, snapshot) {
-                      if(snapshot.connectionState == ConnectionState.waiting)
-                        return Center(child: CircularProgressIndicator(),);
-                      else{
-                        var listTimeSlot = snapshot.data as List<int>;
-                        return GridView.builder(
-                            itemCount: hora.length,
-                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 3,
-                                childAspectRatio: 1.5,
-                                mainAxisSpacing: 1,
-                                crossAxisSpacing: 2
-                            ),
-                            itemBuilder: (context,index) => GestureDetector(
-                              onTap: maxTimeSlot > index || listTimeSlot.contains(index) ? null : () {
-                                setState(() => selectedTime = hora.elementAt(index));
-                                setState(() => selectedTimeSlot = index);
-                                setState(() => currentStep += 1);
-                              },
-                              child: Card(
-                                shape: BeveledRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                color: listTimeSlot.contains(index)
-                                    ? Color(0xFFBE4A4A)
-                                    : maxTimeSlot > index
-                                    ? Color(0xFFEE5E5E)
-                                    : selectedTime == hora.elementAt(index)
-                                    ? Colors.white12
-                                    : Color(0xFF555555),
-                                child: GridTile(
-                                  child: Center(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Text('${hora.elementAt(index).substring(0, 5)}', style: TextStyle(color: Colors.white)),
-                                        Text(listTimeSlot.contains(index) ? 'Lleno'
-                                            : maxTimeSlot > index ? 'No Disponible'
-                                            : 'Disponible', style: TextStyle(color: Colors.white))
-                                      ],
-                                    ),
-                                  ),
-                                  header: selectedTime == hora.elementAt(index) ? Icon(Icons.check) : null,
-                                ),
-                              ),
-                            ));
+                      future: getServicio('1ShJfG667NcT0V8A5Xfy'),
+                      builder: (context, AsyncSnapshot<Servicios> snapshot){
+                        if(snapshot.connectionState == ConnectionState.waiting)
+                          return Center(child: CircularProgressIndicator());
+                        else{
+                          Servicios peluqueria = snapshot.data as Servicios;
+                          return FutureBuilder(
+                              future: getMaxAvailableTimeSlot(selectedDate),
+                              builder: (context, snapshot) {
+                                if(snapshot.connectionState == ConnectionState.waiting)
+                                  return Center(child: CircularProgressIndicator(),);
+                                else
+                                {
+                                  var maxTimeSlot = snapshot.data as int;
+                                  return FutureBuilder(
+                                    future: getTimeSlotOfServicios(peluqueria, DateFormat('dd_MM_yy').format(selectedDate), fun),
+                                    builder: (context, snapshot) {
+                                      if(snapshot.connectionState == ConnectionState.waiting)
+                                        return Center(child: CircularProgressIndicator(),);
+                                      else{
+                                        var listTimeSlot = snapshot.data as List<int>;
+                                        return GridView.builder(
+                                            itemCount: x.horario.split(',').length,
+                                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                                crossAxisCount: 3,
+                                                childAspectRatio: 1.5,
+                                                mainAxisSpacing: 1,
+                                                crossAxisSpacing: 2
+                                            ),
+                                            itemBuilder: (context,index) => GestureDetector(
+                                              onTap: maxTimeSlot > index || listTimeSlot.contains(index) ? null : () {
+                                                setState(() => selectedTime = x.horario.split(',').elementAt(index));
+                                                setState(() => selectedTimeSlot = index);
+                                                setState(() => currentStep += 1);
+                                              },
+                                              child: Card(
+                                                shape: BeveledRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(20),
+                                                ),
+                                                color: listTimeSlot.contains(index)
+                                                    ? Color(0xFFBE4A4A)
+                                                    : maxTimeSlot > index
+                                                    ? Color(0xFFEE5E5E)
+                                                    : selectedTime == x.horario.split(',').elementAt(index)
+                                                    ? Colors.white12
+                                                    : Color(0xFF555555),
+                                                child: GridTile(
+                                                  child: Center(
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        Text('${x.horario.split(',').elementAt(index).substring(0, 5)}', style: TextStyle(color: Colors.white)),
+                                                        Text(listTimeSlot.contains(index) ? 'Lleno'
+                                                            : maxTimeSlot > index ? 'No Disponible'
+                                                            : 'Disponible', style: TextStyle(color: Colors.white))
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  header: selectedTime == x.horario.split(',').elementAt(index) ? Icon(Icons.check) : null,
+                                                ),
+                                              ),
+                                            ));
+                                      }
+                                    },
+                                  );
+                                }
+                              }
+                          );
+                        }
                       }
-                    },
                   );
                 }
               }
-          ),
-        )
+          )
+        ),
       ],
     );
   }
@@ -555,7 +427,7 @@ class _BookingEstablecimientoScreen extends State<BookingEstablecimientoScreen> 
       setState(() => selectedTimeSlot = -1);
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (context) => BookingScreen(),
+            builder: (context) => BookingEstablecimientoScreen(),
           )
       );
     });
@@ -594,7 +466,7 @@ class _BookingEstablecimientoScreen extends State<BookingEstablecimientoScreen> 
       children: [
         SizedBox(height: MediaQuery.of(context).size.height / 30,),
         FutureBuilder(
-          future: downloadURL(selectedEstablecimiento.name),
+          future: downloadURL('reda'),
           builder: (context, AsyncSnapshot<String>snapshot) {
             if(snapshot.connectionState == ConnectionState.done && snapshot.hasData){
               return Container(
@@ -645,8 +517,20 @@ class _BookingEstablecimientoScreen extends State<BookingEstablecimientoScreen> 
                 Text('${selectedEstablecimiento.address}')
               ],),
               SizedBox(height: 20,),
-              ElevatedButton(onPressed: () => confirmBooking(context), child: Text('Confirmar'),
-                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.black26)),)
+              /*ElevatedButton(
+                onPressed: () => confirmBooking(context),
+                child: Text('Confirmar'),
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.black26)),
+              )*/
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => BookingEstablecimientoScreen(),
+                    )
+                ),
+                child: Text('Confirmar'),
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.black26)),
+              )
             ],
           ),),),
         ))

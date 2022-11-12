@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.recomienda_flutter">
+    package="com.app.recomienda_comercios">
     <uses-permission android:name="android.permission.READ_CALENDAR"/>
     <uses-permission android:name="android.permission.WRITE_CALENDAR"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -10,7 +10,7 @@
         </intent>
     </queries>
     <application
-        android:label="recomienda"
+        android:label="C_Recomienda"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity

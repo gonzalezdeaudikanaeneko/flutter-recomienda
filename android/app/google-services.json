@@ -7,12 +7,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:52717580347:android:8c28af5c11558731cbac1e",
+        "mobilesdk_app_id": "1:52717580347:android:9f5bd0f8e5cdfc03cbac1e",
         "android_client_info": {
-          "package_name": "com.example.recomienda_flutter"
+          "package_name": "com.app.recomienda_comercios"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "52717580347-lr1hqqlrnrjt3t6nkhmodtkh11b2inqq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.recomienda_comercios",
+            "certificate_hash": "abd5483d77d149ba6d20c6024bfbb5c20224d0c2"
+          }
+        },
         {
           "client_id": "52717580347-52m9vvovnsu43m84v0pae10d7i0dnqnb.apps.googleusercontent.com",
           "client_type": 3
@@ -29,6 +37,57 @@
             {
               "client_id": "52717580347-52m9vvovnsu43m84v0pae10d7i0dnqnb.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "52717580347-16np3a3367tpcc13to3bnovhs7sr75g2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.app.recomiendaFlutter"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:52717580347:android:8c28af5c11558731cbac1e",
+        "android_client_info": {
+          "package_name": "com.example.recomienda_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "52717580347-vh7t71c8gvse42npaqbu42c195vrkid3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.recomienda_flutter",
+            "certificate_hash": "abd5483d77d149ba6d20c6024bfbb5c20224d0c2"
+          }
+        },
+        {
+          "client_id": "52717580347-52m9vvovnsu43m84v0pae10d7i0dnqnb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnXcMkKqzaZcdamfpEM4EvKJPVtfYilIg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "52717580347-52m9vvovnsu43m84v0pae10d7i0dnqnb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "52717580347-16np3a3367tpcc13to3bnovhs7sr75g2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.app.recomiendaFlutter"
+              }
             }
           ]
         }

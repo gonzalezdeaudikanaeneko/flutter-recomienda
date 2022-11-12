@@ -5,6 +5,7 @@ import 'package:recomienda_flutter/model/servicios.dart';
 import '../model/establecimientos.dart';
 import '../model/funcion.dart';
 import '../model/salones.dart';
+import '../model/servicios.dart';
 
 Future<List<Establecimientos>> getEstablecimientos() async {
   var establecimiento = new List<Establecimientos>.empty(growable: true);
@@ -16,31 +17,29 @@ Future<List<Establecimientos>> getEstablecimientos() async {
   return establecimiento;
 }
 
-Future<List<Salon>> getSalones(String es) async {
-  var salones = new List<Salon>.empty(growable: true);
-  var salonRef = FirebaseFirestore.instance.collection('establecimientos').doc(es).collection('Branch');
-  var snapshot = await salonRef.get();
-  snapshot.docs.forEach((element){
-    var salon = Salon.fromJson(element.data());
-    salon.docId = element.id;
-    salon.reference = element.reference;
-    salones.add(salon);
-    //salones.add(Salon.fromJson(element.data()));
-  });
-  return salones;
+Future<Salon> getReda(String nombre) async{
+  var userRef = FirebaseFirestore.instance.collection('establecimientos').doc('reda').collection('Branch').doc(nombre);
+  var snapshot = await userRef.get();
+  if(snapshot.exists){
+    var salon = Salon.fromJson(snapshot.data()!);
+    salon.docId = snapshot.id;
+    salon.reference = snapshot.reference;
+    return salon;
+  }else{
+    return Salon(name: 'name', address: 'address', horario: 'horario', docId: 'docId');
+  }
 }
 
-Future<List<Servicios>> getServicios(Salon ser) async {
-  var servicios = new List<Servicios>.empty(growable: true);
-  var serviciosRef = ser.reference.collection('barber');
+Future<Servicios> getServicio(String nombre) async{
+  var serviciosRef = FirebaseFirestore.instance.collection('establecimientos').doc('reda').collection('Branch').doc('RUU7mpPeTbrhIy2LXtDe').collection('barber').doc(nombre);
   var snapshot = await serviciosRef.get();
-  snapshot.docs.forEach((element){
-    var servicio = Servicios.fromJson(element.data());
-    servicio.docId = element.id;
-    servicio.reference = element.reference;
-    servicios.add(servicio);
-  });
-  return servicios;
+  if(snapshot.exists){
+    var servicio = Servicios.fromJson(snapshot.data()!);
+    servicio.docId = snapshot.id;
+    servicio.reference = snapshot.reference;
+    return servicio;
+  }
+  return Servicios(userName: 'userName', name: 'name', docId: 'docId');
 }
 
 Future<List<Funcion>> getFunciones(Salon ser) async {
@@ -77,7 +76,6 @@ Future<List<int>> getTimeSlotOfServicios(Servicios ser, String date, Funcion fun
 Future<ListResult> listLogo() async {
   FirebaseStorage storage = FirebaseStorage.instance;
   ListResult results = await storage.ref('reda').listAll();
-
   results.items.forEach((element) {
     print('Archivo $element');
   });

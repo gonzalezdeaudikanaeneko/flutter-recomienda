@@ -6,7 +6,6 @@ import 'package:recomienda_flutter/booking_establecimiento.dart';
 import '../home_page_widget.dart';
 import '../utils/authentication.dart';
 import 'book_list.dart';
-import 'book_list_ainhoa.dart';
 
 class InicioEstablecimiento extends StatelessWidget {
   const InicioEstablecimiento({Key? key}) : super(key: key);
@@ -72,7 +71,7 @@ class InicioEstablecimiento extends StatelessWidget {
                           )
                       );
                     },
-                    child: Text('RESERVAS REDA', style: TextStyle(
+                    child: Text('Listado Reda', style: TextStyle(
                         fontSize: 25,
                         fontWeight: FontWeight.bold
                     ),
@@ -81,25 +80,28 @@ class InicioEstablecimiento extends StatelessWidget {
             ),
             Container(
                 padding: EdgeInsets.all(16),
-                height: MediaQuery.of(context).size.height/4,
+                height: 200,
                 child: ElevatedButton(
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF7CBF97)),
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                        Colors.black.withOpacity(0.05),),
                     ),
                     onPressed: () {
-                      Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (context) => BookListAinhoa(),
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Proximamente !'),
+                            behavior: SnackBarBehavior.floating,
+                            duration: Duration(seconds: 3),
                           )
                       );
                     },
-                    child: Text('RESERVAS AINHOA', style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold
+                    child: Text('Listado Ainhoa', style: TextStyle(
+                        fontSize: 20,
+                        fontStyle: FontStyle.italic
                     ),
                     )
                 )
-            ),
+            )
           ],
         ));
   }
