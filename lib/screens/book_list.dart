@@ -1,11 +1,11 @@
 
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:recomienda_flutter/screens/InicioEstablecimiento.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 
 import '../model/booking_model.dart';
 import '../utils/utils.dart';
@@ -21,6 +21,7 @@ class BookList extends StatefulWidget{
 class _BookList extends State<BookList> {
 
   DateTime selectedDate = DateTime.now();
+  String comp = '';
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +65,7 @@ class _BookList extends State<BookList> {
                           ),
                         )
                     ),
-                    /*GestureDetector(
+                    GestureDetector(
                       onTap: () {
                         DatePicker.showDatePicker(context,
                             showTitleActions: true,
@@ -78,7 +79,7 @@ class _BookList extends State<BookList> {
                           child: Icon(Icons.calendar_today, color: Colors.white,),
                         ),
                       ),
-                    )*/
+                    )
                   ],
                 ),
               ),
@@ -90,9 +91,17 @@ class _BookList extends State<BookList> {
                       return Center(child: CircularProgressIndicator(),);
                     else{
                       var userBooking = snapshot.data as List<BookingModel>;
+
                       if(userBooking == null || userBooking.length == 0)
                         return Center(child: Text('No hay reservas ese dia'),);
                       else {
+                        var userBooking2 = List<BookingModel>.empty(growable: true);
+                        userBooking.forEach((element) {
+                          if(('${element.customerEmail} + ${element.time}') != comp)
+                            userBooking2.add(element);
+                          comp = '${element.customerEmail} + ${element.time}';
+                        });
+
                         return FutureBuilder(
                             future: syncTime(),
                             builder: (context,snapshot){
@@ -101,11 +110,8 @@ class _BookList extends State<BookList> {
                               else{
                                 var syncTime = snapshot.data as DateTime;
                                 return ListView.builder(
-                                    itemCount: userBooking.length,
+                                    itemCount: userBooking2.length,
                                     itemBuilder: (context, index) {
-                                      /*var isExpired = DateTime.fromMillisecondsSinceEpoch(
-                                          userBooking[index].timeStamp)
-                                          .isBefore(syncTime);*/
                                       return Card(
                                         elevation: 8,
                                         shape: RoundedRectangleBorder(
@@ -127,14 +133,14 @@ class _BookList extends State<BookList> {
                                                           Text('Dia', style: TextStyle(fontWeight: FontWeight.bold)),
                                                           Text(DateFormat('dd/MM/yy').format(
                                                               DateTime.fromMillisecondsSinceEpoch(
-                                                                  userBooking[index].timeStamp)
+                                                                  userBooking2[index].timeStamp)
                                                           )),
                                                         ],
                                                       ),
                                                       Column(
                                                         children: [
                                                           Text('Hora', style: TextStyle(fontWeight: FontWeight.bold)),
-                                                          Text(TIME_SLOT.elementAt(userBooking[index].slot).substring(0,5)),
+                                                          Text(TIME_SLOT.elementAt(userBooking2[index].slot).substring(0,5)),
                                                         ],
                                                       )
                                                     ],
@@ -147,18 +153,18 @@ class _BookList extends State<BookList> {
                                                       Row(
                                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                         children: [
-                                                          Text('${userBooking[index].customerEmail} (${userBooking[index].salonName})'),
-                                                          Text('${userBooking[index].customerName}'),
+                                                          Text('${userBooking2[index].customerEmail} (${userBooking2[index].salonName})'),
+                                                          Text('${userBooking2[index].customerName}'),
                                                         ],
                                                       ),
-                                                      Text('${userBooking[index].salonAddress}')
+                                                      Text('${userBooking2[index].salonAddress}')
                                                     ],
                                                   )
                                                 ],
                                               ),
                                             ),
-                                            /*GestureDetector(
-                                              onTap: isExpired ? null : () {
+                                            GestureDetector(
+                                              onTap: () => {
                                                 Alert(
                                                     context: context,
                                                     type: AlertType.warning,
@@ -167,12 +173,13 @@ class _BookList extends State<BookList> {
                                                     buttons: [
                                                       DialogButton(child: Text('CANCELAR'), onPressed: () => Navigator.of(context).pop(), color: Colors.redAccent,),
                                                       DialogButton(child: Text('ELIMINAR'), onPressed: () {
-                                                        cancelBooking(context, userBooking[index]);
+                                                        //cancelBooking(context, userBooking[index]);
                                                         Navigator.of(context).pop();
                                                         setState(() => selectedDate = selectedDate);
                                                       }, color: Colors.lightGreen,),
                                                     ]
-                                                ).show();
+                                                ).show(),
+                                                print('hellow'),
                                               },
                                               child: Container(
                                                 decoration: BoxDecoration(
@@ -187,20 +194,11 @@ class _BookList extends State<BookList> {
                                                   children: [
                                                     Padding(
                                                       padding: EdgeInsets.symmetric(vertical: 10),
-                                                      child: Text(
-                                                        userBooking[index].done
-                                                            ? 'FINALIZADO'
-                                                            : isExpired
-                                                            ? 'EXPIRADO'
-                                                            : 'CANCELAR',
-                                                        style: TextStyle(
-                                                            color: isExpired ? Colors.redAccent : Colors.white
-                                                        ),
-                                                      ),
+                                                      child: Text('CANCELAR'),
                                                     )
                                                   ],
                                                 ),
-                                              ),)*/
+                                              ),)
                                           ],
                                         ),
                                       );
