@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:io';
 
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -9,7 +11,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../main.dart';
 
-import 'lat_lng.dart';
 
 export 'lat_lng.dart';
 export 'place.dart';
@@ -160,11 +161,11 @@ const kTextValidatorEmailRegex =
 const kTextValidatorWebsiteRegex =
     r'(https?:\/\/)?(www\.)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)|(https?:\/\/)?(www\.)?(?!ww)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)';
 
-/*void setAppLanguage(BuildContext context, String language) =>
+void setAppLanguage(BuildContext context, String language) =>
     MyApp.of(context).setLocale(Locale(language, ''));
 
 void setDarkModeSetting(BuildContext context, ThemeMode themeMode) =>
-    MyApp.of(context).setThemeMode(themeMode);*/
+    MyApp.of(context).setThemeMode(themeMode);
 
 void showSnackbar(
   BuildContext context,
@@ -178,12 +179,12 @@ void showSnackbar(
       content: Row(
         children: [
           if (loading)
-            Padding(
+            const Padding(
               padding: EdgeInsetsDirectional.only(end: 10.0),
-              child: Container(
+              child: SizedBox(
                 height: 20,
                 width: 20,
-                child: const CircularProgressIndicator(
+                child: CircularProgressIndicator(
                   color: Colors.white,
                 ),
               ),

@@ -1,10 +1,14 @@
-import 'package:flutter/cupertino.dart';
+// ignore: unnecessary_import
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:recomienda_flutter/res/custom_colors.dart';
 import 'package:recomienda_flutter/utils/authentication.dart';
 import 'package:recomienda_flutter/widgets/google_sign_in_button.dart';
 
 class SignInScreen extends StatefulWidget {
+  const SignInScreen({Key? key}) : super(key: key);
+
   @override
   _SignInScreenState createState() => _SignInScreenState();
 }
@@ -46,11 +50,11 @@ class _SignInScreenState extends State<SignInScreen> {
                 future: Authentication.initializeFirebase(context: context),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
-                    return Text('Error initializing Firebase');
+                    return const Text('Error initializing Firebase');
                   } else if (snapshot.connectionState == ConnectionState.done) {
-                    return GoogleSignInButton();
-                  };
-                  return CircularProgressIndicator(
+                    return const GoogleSignInButton();
+                  }
+                  return const CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation<Color>(
                       CustomColors.firebaseNavy,
                     ),

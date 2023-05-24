@@ -1,8 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:recomienda_flutter/booking.dart';
 import 'package:recomienda_flutter/screens/InicioEstablecimiento.dart';
 
 class Authentication {
@@ -11,7 +14,7 @@ class Authentication {
       backgroundColor: Colors.black,
       content: Text(
         content,
-        style: TextStyle(color: Colors.redAccent, letterSpacing: 0.5),
+        style: const TextStyle(color: Colors.redAccent, letterSpacing: 0.5),
       ),
     );
   }
@@ -24,11 +27,20 @@ class Authentication {
     User? user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => InicioEstablecimiento(),
-        ),
-      );
+      if(user.email == 'redareservas@gmail.com'){
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const InicioEstablecimiento(),
+          ),
+        );
+      }else{
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const BookingScreen(),
+          ),
+        );
+      }
+
     }
 
     return firebaseApp;
@@ -47,7 +59,7 @@ class Authentication {
 
         user = userCredential.user;
       } catch (e) {
-        print(e);
+        //print(e);
       }
     } else {
       final GoogleSignIn googleSignIn = GoogleSignIn();

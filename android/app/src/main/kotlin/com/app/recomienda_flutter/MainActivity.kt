@@ -1,4 +1,4 @@
-package com.app.recomienda_comercios
+package com.app.recomienda_flutter
 
 import io.flutter.embedding.android.FlutterActivity
 

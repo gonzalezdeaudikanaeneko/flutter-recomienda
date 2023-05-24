@@ -15,10 +15,10 @@ class Salon{
   }
 
   Map<String, dynamic> toJson(){
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['name'] = this.name;
-    data['address'] = this.address;
-    data['horario'] = this.horario;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['name'] = name;
+    data['address'] = address;
+    data['horario'] = horario;
     return data;
   }
 

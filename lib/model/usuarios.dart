@@ -1,6 +1,6 @@
 class Usuarios{
   late String nombre, email, edad, telefono;
-  late bool isStaff;
+  late bool isComerce;
 
   Usuarios({required this.nombre, required this.email, required this.edad, required this.telefono});
   //Establecimientos();
@@ -10,16 +10,16 @@ class Usuarios{
     email = json['email'];
     edad = json['edad'];
     telefono = json['telefono'];
-    isStaff = json['isStaff'] == null ? false : json['isStaff'] as bool;
+    isComerce = json['isComerce'] == null ? false : json['isComerce'] as bool;
   }
 
   Map<String, dynamic> toJson(){
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['nombre'] = this.nombre;
-    data['email'] = this.email;
-    data['edad'] = this.edad;
-    data['telefono'] = this.telefono;
-    data['isStaff'] = this.isStaff;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['nombre'] = nombre;
+    data['email'] = email;
+    data['edad'] = edad;
+    data['telefono'] = telefono;
+    data['isComerce'] = isComerce;
     return data;
   }
 
