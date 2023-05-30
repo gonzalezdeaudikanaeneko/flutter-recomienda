@@ -131,6 +131,7 @@ flutter:
     - assets/icons/perfil.png
     - assets/icons/buscar.png
     - assets/icons/reservado.png
+    - assets/qr1.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

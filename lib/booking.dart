@@ -430,6 +430,7 @@ class _BookingScreen extends State<BookingScreen> {
     );
   }
 
+  //dispayEstablecimientos(){}
   /*displayEstablecimientos(String val) {
     return FutureBuilder(
         //future: getEstablecimientos(),
@@ -477,7 +478,7 @@ class _BookingScreen extends State<BookingScreen> {
         }
     );
   }*/
-  displayEstablecimientos(String val) {
+  /*displayEstablecimientos(String val) {
     return FutureBuilder(
       //future: getEstablecimientos(),
         future: getEstablecimientos2(val.toLowerCase()),
@@ -550,7 +551,7 @@ class _BookingScreen extends State<BookingScreen> {
           }
         }
     );
-  }
+  }*/
 
   displayEstablecimientosMapa(){
     return FutureBuilder(
@@ -674,7 +675,8 @@ class _BookingScreen extends State<BookingScreen> {
           .instance
           .collection('establecimientos')
             //Condicion que en los establecimientos exista un documento con algun nombre en la lista de tipos
-          //.where('tipo', arrayContainsAny: list.map((filtro)=>filtro.toLowerCase()).toList())
+          //.where('tipo', arrayContainsAny: <String>['a', 'b', 'Peluqueria'].map((filtro)=>filtro.toLowerCase()).toList())
+          .where('tipo', arrayContainsAny: list.map((filtro)=>filtro.toLowerCase()).toList())
             //Ordenar de forma descendiente por la columna address
           //.orderBy('address', descending: false)
           .snapshots(),

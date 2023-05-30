@@ -160,7 +160,14 @@ class _PromocionPageState extends State<PromocionPage> {
                                         SizedBox(height: 10,),
                                         Text('Inicio: $ini'),
                                         SizedBox(height: 10,),
-                                        Text('Fin: $fin')
+                                        Text('Fin: $fin'),
+                                        SizedBox(height: 10,),
+                                        Image.asset(
+                                          'assets/qr1.png',
+                                          //width: MediaQuery.of(context).size.width * 0.59,
+                                          height: MediaQuery.of(context).size.width / 2,
+                                          fit: BoxFit.cover,
+                                        )
                                       ],
                                     ),
                                     actions: [
