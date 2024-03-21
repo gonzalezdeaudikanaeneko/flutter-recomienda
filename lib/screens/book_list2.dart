@@ -1,10 +1,10 @@
 
 // ignore_for_file: unnecessary_new, library_private_types_in_public_api
 
-import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+//FINAL
+//import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:recomienda_flutter/screens/InicioEstablecimiento.dart';
 
@@ -13,7 +13,6 @@ import '../model/booking_model.dart';
 import '../model/funcion.dart';
 import '../model/salones.dart';
 import '../model/servicios.dart';
-import '../state/state_management.dart';
 import '../utils/utils.dart';
 
 class BookList2 extends StatefulWidget{
@@ -35,7 +34,6 @@ class _BookList2 extends State<BookList2> {
 
   @override
   Widget build(BuildContext context) {
-    var now = selectedDate;
     return SafeArea(
         child: Scaffold(
           backgroundColor: Colors.white,
@@ -95,14 +93,25 @@ class _BookList2 extends State<BookList2> {
                 ),
               ),
               GestureDetector(
-                onTap: () {
-                  DatePicker.showDatePicker(context,
+                onTap: () async {
+                  //FINAL
+                  final DateTime? picked = await showDatePicker(
+                      context: context,
+                      initialDate: selectedDate,
+                      firstDate: DateTime.now(),
+                      lastDate: DateTime.now().add(const Duration(days: 31)));
+                  if (picked != null && picked != selectedDate) {
+                    setState(() {
+                      selectedDate = picked;
+                    });
+                  }
+                  /*DatePicker.showDatePicker(context,
                       showTitleActions: true,
                       locale: LocaleType.es,
                       minTime: DateTime.now(), //Tiempo desde que puedo coger cita
                       maxTime: DateTime.now().add(const Duration(days: 31)) , //Tiempo hasta qu puedo coger cita
                       onConfirm: (date) => setState(() => selectedDate = date)// next time 31 days ago
-                  );
+                  );*/
                 },
                 child: Center(
                   child: Padding(
@@ -216,8 +225,8 @@ class _BookList2 extends State<BookList2> {
                                                       crossAxisAlignment: CrossAxisAlignment.center,
                                                       mainAxisAlignment: MainAxisAlignment.center,
                                                       children: [
-                                                        listTimeSlot.contains(index) ? Text('Eneko', style: const TextStyle(color: Colors.white)) : Container(),
-                                                        listTimeSlot.contains(index) ? Text('Gonzalez', style: const TextStyle(color: Colors.white)) : Text(x.horario.split(',').elementAt(index).substring(0, 5), style: const TextStyle(color: Colors.white)),
+                                                        listTimeSlot.contains(index) ? const Text('Eneko', style: TextStyle(color: Colors.white)) : Container(),
+                                                        listTimeSlot.contains(index) ? const Text('Gonzalez', style: TextStyle(color: Colors.white)) : Text(x.horario.split(',').elementAt(index).substring(0, 5), style: const TextStyle(color: Colors.white)),
                                                         Text(listTimeSlot.contains(index) ? x.horario.split(',').elementAt(index).substring(0, 5)
                                                             : maxTimeSlot > index ? 'No Disponible'
                                                             : 'Disponible', style: const TextStyle(color: Colors.white))

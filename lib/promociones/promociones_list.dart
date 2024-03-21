@@ -146,7 +146,7 @@ class _PromocionPageState extends State<PromocionPage> {
                                       DateTime.fromMillisecondsSinceEpoch(
                                           promo.fin.millisecondsSinceEpoch));
                                   return AlertDialog(
-                                    title: Text('Promocion'),
+                                    title: const Text('Promocion'),
                                     content: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       crossAxisAlignment: CrossAxisAlignment
@@ -154,14 +154,14 @@ class _PromocionPageState extends State<PromocionPage> {
                                       mainAxisAlignment: MainAxisAlignment
                                           .center,
                                       children: [
-                                        Text('Titulo'),
-                                        SizedBox(height: 10,),
+                                        const Text('Titulo'),
+                                        const SizedBox(height: 10,),
                                         Text(promo.description),
-                                        SizedBox(height: 10,),
+                                        const SizedBox(height: 10,),
                                         Text('Inicio: $ini'),
-                                        SizedBox(height: 10,),
+                                        const SizedBox(height: 10,),
                                         Text('Fin: $fin'),
-                                        SizedBox(height: 10,),
+                                        const SizedBox(height: 10,),
                                         Image.asset(
                                           'assets/qr1.png',
                                           //width: MediaQuery.of(context).size.width * 0.59,
@@ -175,7 +175,7 @@ class _PromocionPageState extends State<PromocionPage> {
                                         onPressed: () {
                                           Navigator.of(context).pop();
                                         },
-                                        child: Text('Cerrar'),
+                                        child: const Text('Cerrar'),
                                       ),
                                     ],
                                   );
@@ -184,13 +184,11 @@ class _PromocionPageState extends State<PromocionPage> {
                             },
                           );
                         },
-                        leading: Container(
-                          child: AspectRatio(
-                            aspectRatio: 1.5,
-                            child: Image.network(
-                              data['url'],
-                              fit: BoxFit.fill,
-                            ),
+                        leading: AspectRatio(
+                          aspectRatio: 1.5,
+                          child: Image.network(
+                            data['url'],
+                            fit: BoxFit.fill,
                           ),
                         ),
                         title: Text(data['description']),

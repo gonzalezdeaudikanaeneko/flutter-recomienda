@@ -1,7 +1,7 @@
 // ignore: file_names
 // ignore: file_names
 
-// ignore_for_file: file_names, duplicate_ignore
+// ignore_for_file: file_names, duplicate_ignore, unused_import
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';

@@ -94,23 +94,23 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
                   );
                 }
               },
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+              child: const Padding(
+                padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const <Widget>[
+                  children: <Widget>[
                     //dimensio google sign in
                     Image(
                       image: AssetImage("assets/google_logo.png"),
-                      height: 15.0,
+                      height: 25.0,
                     ),
                     Padding(
                       padding: EdgeInsets.only(left: 10),
                       child: Text(
-                        'Iniciar con Gmail',
+                        'iniciar con Gmail',
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 15,
                           color: Colors.black54,
                           fontWeight: FontWeight.w600,
                         ),

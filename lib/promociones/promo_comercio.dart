@@ -235,7 +235,7 @@ class _PromocionComercio extends State<PromocionComercio> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => { print('Añadir Promocion') },
+        onPressed: () => {  },
         backgroundColor: const Color(0xFF7CBF97),
         child: const Icon(Icons.add),
       ),

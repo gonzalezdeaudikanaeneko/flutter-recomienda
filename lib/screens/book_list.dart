@@ -4,7 +4,8 @@
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+//FINAL
+//import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:recomienda_flutter/screens/InicioEstablecimiento.dart';
 
@@ -101,13 +102,24 @@ class _BookList extends State<BookList> {
                             )
                         ),
                         GestureDetector(
-                          onTap: () {
-                            DatePicker.showDatePicker(
+                          onTap: () async {
+                            //FINAL
+                            final DateTime? picked = await showDatePicker(
+                                context: context,
+                                initialDate: selectedDate,
+                                firstDate: DateTime.now(),
+                                lastDate: DateTime.now().add(const Duration(days: 31)));
+                            if (picked != null && picked != selectedDate) {
+                              setState(() {
+                                selectedDate = picked;
+                              });
+                            }
+                            /*DatePicker.showDatePicker(
                                 context,
                                 locale: LocaleType.es,
                                 showTitleActions: true,
                                 onConfirm: (date) => setState(() => selectedDate = date) // next time 31 days ago// next time 31 days ago
-                            );
+                            );*/
                           },
                           child: const Padding(
                             padding: EdgeInsets.all(8),
@@ -223,9 +235,9 @@ class _BookList extends State<BookList> {
                                                         bottomLeft: Radius.circular(22),
                                                       ),
                                                     ),
-                                                    child: Row(
+                                                    child: const Row(
                                                       mainAxisAlignment: MainAxisAlignment.center,
-                                                      children: const [
+                                                      children: [
                                                         Padding(
                                                           padding: EdgeInsets.symmetric(vertical: 10),
                                                           child: Text('CANCELAR'),

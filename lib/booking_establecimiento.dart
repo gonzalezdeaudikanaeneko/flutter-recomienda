@@ -2,7 +2,8 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+//FINAL
+//import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:recomienda_flutter/cloud/todos_establecimientos.dart';
 import 'package:recomienda_flutter/model/booking_model.dart';
@@ -263,14 +264,25 @@ class _BookingEstablecimientoScreen extends State<BookingEstablecimientoScreen> 
                 ),
               ),
               GestureDetector(
-                onTap: () {
-                  DatePicker.showDatePicker(context,
+                onTap: () async {
+                  //FINAL
+                  final DateTime? picked = await showDatePicker(
+                      context: context,
+                      initialDate: selectedDate,
+                      firstDate: DateTime.now(),
+                      lastDate: DateTime.now().add(const Duration(days: 31)));
+                  if (picked != null && picked != selectedDate) {
+                    setState(() {
+                      selectedDate = picked;
+                    });
+                  }
+                  /*DatePicker.showDatePicker(context,
                       showTitleActions: true,
                       locale: LocaleType.es,
                       minTime: DateTime.now(), //Tiempo desde que puedo coger cita
                       maxTime: DateTime.now().add(const Duration(days: 31)) , //Tiempo hasta qu puedo coger cita
                       onConfirm: (date) => setState(() => selectedDate = date)// next time 31 days ago
-                  );
+                  );*/
                 },
                 child: Center(
                       child: Padding(

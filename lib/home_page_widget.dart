@@ -36,165 +36,138 @@ class _HomePageWidget2 extends State<HomePageWidget2>{
         child: Container(
           padding: EdgeInsets.all(MediaQuery.of(context).size.width/22),
           decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              //begin: Alignment.topCenter,
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Color(0xFFA0DD9E),
-                Color(0xFF82C697),
-                Color(0xFF78BC94),
-                Color(0xFF59A38C),
-              ],
+            image: DecorationImage(
+                image: AssetImage(
+                    'assets/recomienda_fondo_iconitos.png'
+                ),
+                fit: BoxFit.cover,
+              opacity: 0.3
             ),
           ),
-          child: Container(
-            //padding: EdgeInsets.all(16),
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              color: Colors.white
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Align(
-                  alignment: const AlignmentDirectional(0, 0),
-                  child: Image.asset(
-                    'assets/logo.png',
-                    //width: MediaQuery.of(context).size.width * 0.59,
-                    height: MediaQuery.of(context).size.height * 0.27,
-                    fit: BoxFit.cover,
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Align(
+                alignment: const AlignmentDirectional(0, 0),
+                child: Image.asset(
+                  'assets/logo.png',
+                  //width: MediaQuery.of(context).size.width * 0.59,
+                  height: MediaQuery.of(context).size.height * 0.33,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              Align(
+                alignment: const AlignmentDirectional(0, 0),
+                child: const Text('RECOMIENDA',style: TextStyle(letterSpacing: 2, fontSize: 30, fontWeight: FontWeight.bold, color: Color(0xFF525252))),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height/15,
+              ),
+              FFButtonWidget(
+                onPressed: () {
+                },
+                text: 'Usuario',
+                options: FFButtonOptions(
+                  width: MediaQuery.of(context).size.width * 0.7,
+                  height: MediaQuery.of(context).size.height * 0.06,
+                  color: const Color(0xFFA0DD9E),
+                  textStyle:
+                  FlutterFlowTheme.of(context).subtitle2.override(
+                      fontFamily: 'Poppins',
+                      color: const Color(0xFF525252),
+                      /*
+                      Color(0xFFA0DD9E),
+                      Color(0xFF82C697),
+                      Color(0xFF78BC94),
+                      Color(0xFF59A38C),
+                      */
+                      fontWeight: FontWeight.w400,
+                      letterSpacing: 3,
+                      fontStyle: FontStyle.italic
                   ),
+                  borderRadius: BorderRadius.circular(30),
                 ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height/30,
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.74,
-                  //width: 279,
-                  height: MediaQuery.of(context).size.height * 0.47,
-                  //height: 320,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF8F8F8),
-                    boxShadow: const [
-                      BoxShadow(
-                        blurRadius: 8,
-                        color: Colors.black12,
-                        offset: Offset.zero,
-                        spreadRadius: 2,
-                      )
-                    ],
-                    borderRadius: BorderRadius.circular(8),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.03,
+              ),
+              FFButtonWidget(
+                onPressed: () {
+                },
+                text: 'Contraseña',
+                options: FFButtonOptions(
+                  width: MediaQuery.of(context).size.width * 0.7,
+                  height: MediaQuery.of(context).size.height * 0.06,
+                  color: const Color(0xFFA0DD9E),
+                  textStyle:
+                  FlutterFlowTheme.of(context).subtitle2.override(
+                      fontFamily: 'Poppins',
+                      color: const Color(0xFF525252),
+                      fontWeight: FontWeight.w400,
+                      letterSpacing: 3,
+                      fontStyle: FontStyle.italic
                   ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text('RECOMIENDA',style: TextStyle(letterSpacing: 2, fontSize: 30, fontWeight: FontWeight.bold, color: Color(0xFF525252))),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height/20,
-                      ),
-                      FFButtonWidget(
-                        onPressed: () {
-                        },
-                        text: 'Usuario',
-                        options: FFButtonOptions(
-                          width: MediaQuery.of(context).size.width * 0.57,
-                          height: MediaQuery.of(context).size.height * 0.04,
-                          color: const Color(0xFFEEEEEE),
-                          textStyle:
-                          FlutterFlowTheme.of(context).subtitle2.override(
-                            fontFamily: 'Poppins',
-                              color: const Color(0xFF525252),
-                            fontWeight: FontWeight.w400,
-                            letterSpacing: 3,
-                              fontStyle: FontStyle.italic
-                          ),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.044,
-                      ),
-                      FFButtonWidget(
-                        onPressed: () {
-                        },
-                        text: 'Contraseña',
-                        options: FFButtonOptions(
-                          width: MediaQuery.of(context).size.width * 0.57,
-                          height: MediaQuery.of(context).size.height * 0.04,
-                          color: const Color(0xFFEEEEEE),
-                          textStyle:
-                          FlutterFlowTheme.of(context).subtitle2.override(
-                            fontFamily: 'Poppins',
-                              color: const Color(0xFF525252),
-                            fontWeight: FontWeight.w400,
-                            letterSpacing: 3,
-                              fontStyle: FontStyle.italic
-                          ),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.069,
-                      ),
-                      FFButtonWidget(
-                        onPressed: () {
-                        },
-                        text: 'Login',
-                        options: FFButtonOptions(
-                          width: MediaQuery.of(context).size.width * 0.47,
-                          height: MediaQuery.of(context).size.height * 0.05,
-                          color: const Color(0xFF7CBF97),
-                          textStyle:
-                          FlutterFlowTheme.of(context).subtitle2.override(
-                            fontFamily: 'Poppins',
-                            color: Colors.black87,
-                            fontWeight: FontWeight.w400,
-                            letterSpacing: 3,
-                            fontStyle: FontStyle.italic
-                          ),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.0375,
-                      ),
-                      GestureDetector(onTap: () {
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (context) => const Registro(),
-                          )
-                        );
-                      },child: const Text('Regístrate',
-                          style: TextStyle(
-                              color: Color(0xFF87CA98),
-                              fontStyle: FontStyle.italic
-                          )
-                      )),
-                    ],
+                  borderRadius: BorderRadius.circular(30),
+                ),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.044,
+              ),
+              FFButtonWidget(
+                onPressed: () {
+                },
+                text: 'Login',
+                options: FFButtonOptions(
+                  width: MediaQuery.of(context).size.width * 0.7,
+                  height: MediaQuery.of(context).size.height * 0.06,
+                  color: const Color(0xFF7CBF97),
+                  textStyle:
+                  FlutterFlowTheme.of(context).subtitle2.override(
+                      fontFamily: 'Poppins',
+                      color: Colors.black87,
+                      fontWeight: FontWeight.w400,
+                      letterSpacing: 3,
+                      fontStyle: FontStyle.italic
                   ),
+                  borderRadius: BorderRadius.circular(30),
                 ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.0125,),
-                FutureBuilder(
-                  future: Authentication.initializeFirebase(context: context),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError) {
-                      return const Text('Error initializing Firebase');
-                    } else if (snapshot.connectionState == ConnectionState.done) {
-                      return const GoogleSignInButton();
-                    }
-                    return const CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        CustomColors.firebaseNavy,
-                      ),
-                    );
-                  },
-                ),
-              ],
-            )
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.0375,
+              ),
+              GestureDetector(onTap: () {
+                Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => const Registro(),
+                    )
+                );
+              },child: const Text('Recuperar Contraseña',
+                  style: TextStyle(
+                      color: Color(0xFF87CA98),
+                      fontStyle: FontStyle.italic
+                  )
+              )),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.0375,
+              ),
+              FutureBuilder(
+                future: Authentication.initializeFirebase(context: context),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return const Text('Error initializing Firebase');
+                  } else if (snapshot.connectionState == ConnectionState.done) {
+                    return const GoogleSignInButton();
+                  }
+                  return const CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      CustomColors.firebaseNavy,
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
         ),
       ),
